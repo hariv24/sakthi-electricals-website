@@ -8,17 +8,47 @@ import Footer from "@/components/Footer";
 import { categories, byCat } from "@/lib/data";
 import { useInView } from "@/lib/useInView";
 
+const WEBHOOK = "https://n8n-production-b18ce.up.railway.app/webhook/website-enquiry";
+
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { ref: sectionRef, inView } = useInView({ threshold: 0.1 });
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     if (!form.checkValidity()) { form.reportValidity(); return; }
+
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSubmitted(true); form.reset(); }, 600);
+    setError(false);
+
+    const data = new FormData(form);
+    const body = {
+      name:        data.get("name") as string,
+      company:     data.get("company") as string,
+      email:       data.get("email") as string,
+      phone:       data.get("phone") as string,
+      product:     data.get("product") as string,
+      requirement: data.get("message") as string,
+      source:      "Website",
+    };
+
+    try {
+      const res = await fetch(WEBHOOK, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setSubmitted(true);
+      form.reset();
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   /* Field-level stagger delays — 50ms apart */
@@ -56,7 +86,13 @@ export default function ContactPage() {
 
                 {submitted && (
                   <div style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(31,138,91,.08)", border: "1px solid rgba(31,138,91,.3)", color: "#1E8E5A", borderRadius: "var(--r-md)", padding: 20, fontSize: "14.5px", marginBottom: 24, animation: "slideUp 220ms var(--ease-out) both" }}>
-                    <CheckCircle2 size={20} /> Thanks — your enquiry has been noted. Our team will get back to you shortly.
+                    <CheckCircle2 size={20} /> Thanks — your enquiry has been sent. Our team will get back to you shortly.
+                  </div>
+                )}
+
+                {error && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(216,24,24,.06)", border: "1px solid rgba(216,24,24,.25)", color: "var(--se-red)", borderRadius: "var(--r-md)", padding: 20, fontSize: "14.5px", marginBottom: 24, animation: "slideUp 220ms var(--ease-out) both" }}>
+                    <Send size={18} style={{ flex: "none" }} /> Something went wrong — please try again or email us at <a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--se-red)", fontWeight: 600 }}>sakthi.electricals@yahoo.com</a>
                   </div>
                 )}
 
