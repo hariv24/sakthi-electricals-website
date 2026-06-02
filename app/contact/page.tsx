@@ -144,7 +144,7 @@ export default function ContactPage() {
                       {
                         icon: <Phone size={18} style={{ color: "var(--se-gold)", marginTop: 2 }} />,
                         label: "Phone",
-                        value: <><a href="tel:+919715211788" style={{ color: "#fff" }}>+91 97152 11788</a><br /><a href="tel:+917010170008" style={{ color: "var(--fg-on-dark-2)" }}>+91 70101 70008</a><br /><a href="tel:+917373711788" style={{ color: "var(--fg-on-dark-2)" }}>+91 73737 11788</a></>,
+                        value: <><a href="tel:+917397726150" style={{ color: "#fff" }}>+91 73977 26150</a><br /><a href="tel:+917010170008" style={{ color: "var(--fg-on-dark-2)" }}>+91 70101 70008</a><br /><a href="tel:+917373711788" style={{ color: "var(--fg-on-dark-2)" }}>+91 73737 11788</a></>,
                         delay: 380,
                       },
                       {

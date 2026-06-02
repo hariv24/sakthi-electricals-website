@@ -3,23 +3,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowRight, FileText, LayoutGrid } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { categories, byCat } from "@/lib/data";
-
-const SHORT: Record<string, string> = {
-  "tape-ct": "PVC Tape CT", "resin-ct": "Resin Cast CT", control: "Control",
-  auto: "Auto", pt: "Potential", hv: "High Voltage", vibratory: "Vibratory",
-  epoxy: "Epoxy", panels: "Panels",
-};
 
 export default function ProductsPage() {
   const [activeTab, setActiveTab] = useState("all");
 
   const allTabs = [
-    { slug: "all", name: "All", count: categories.reduce((s, c) => s + byCat(c.slug).length, 0) },
-    ...categories.map(c => ({ slug: c.slug, name: SHORT[c.slug] || c.name, count: byCat(c.slug).length })),
+    { slug: "all", name: "All Products", count: categories.reduce((s, c) => s + byCat(c.slug).length, 0) },
+    ...categories.map(c => ({ slug: c.slug, name: c.name, count: byCat(c.slug).length })),
   ];
 
   return (
