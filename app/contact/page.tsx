@@ -141,13 +141,13 @@ export default function ContactPage() {
                       {
                         icon: <Phone size={18} style={{ color: "var(--se-gold)", marginTop: 2 }} />,
                         label: "Phone",
-                        value: <a href="tel:+919715211788" style={{ color: "#fff" }}>+91 97152 11788</a>,
+                        value: <><a href="tel:+919715211788" style={{ color: "#fff" }}>+91 97152 11788</a><br /><a href="tel:+917397726150" style={{ color: "#fff" }}>+91 73977 26150</a></>,
                         delay: 380,
                       },
                       {
                         icon: <Mail size={18} style={{ color: "var(--se-gold)", marginTop: 2 }} />,
                         label: "Email",
-                        value: <><a href="mailto:manikandan@sakthielectricals.com" style={{ color: "var(--fg-on-dark-2)" }}>manikandan@sakthielectricals.com</a><br /><a href="mailto:sales@sakthielectrical.com" style={{ color: "var(--fg-on-dark-2)" }}>sales@sakthielectrical.com</a></>,
+                        value: <><a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--fg-on-dark-2)" }}>sakthi.electricals@yahoo.com</a><br /><a href="mailto:sales@sakthielectrical.com" style={{ color: "var(--fg-on-dark-2)" }}>sales@sakthielectrical.com</a><br /><a href="mailto:manikandan@sakthielectricals.com" style={{ color: "var(--fg-on-dark-2)" }}>manikandan@sakthielectricals.com</a></>,
                         delay: 460,
                       },
                     ].map((item, i) => (

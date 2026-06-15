@@ -79,14 +79,16 @@ export default function Footer({ menuData }: { menuData: MenuFamily[] }) {
               <div style={{ display: "flex", gap: 11, alignItems: "flex-start", fontSize: 14, color: "var(--fg-on-dark-2)" }}>
                 <Phone size={17} style={{ color: "var(--se-gold)", flex: "none", marginTop: 2 }} />
                 <span>
-                  <b style={{ color: "#fff" }}><a href="tel:+919715211788" style={{ color: "#fff" }}>+91 97152 11788</a></b>
+                  <b style={{ color: "#fff" }}><a href="tel:+919715211788" style={{ color: "#fff" }}>+91 97152 11788</a></b><br />
+                  <a href="tel:+917397726150" style={{ color: "var(--fg-on-dark-2)" }}>+91 73977 26150</a>
                 </span>
               </div>
               <div style={{ display: "flex", gap: 11, alignItems: "flex-start", fontSize: 14, color: "var(--fg-on-dark-2)" }}>
                 <Mail size={17} style={{ color: "var(--se-gold)", flex: "none", marginTop: 2 }} />
                 <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <a href="mailto:manikandan@sakthielectricals.com" style={{ color: "var(--fg-on-dark-2)" }}>manikandan@sakthielectricals.com</a>
+                  <a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--fg-on-dark-2)" }}>sakthi.electricals@yahoo.com</a>
                   <a href="mailto:sales@sakthielectrical.com" style={{ color: "var(--fg-on-dark-2)" }}>sales@sakthielectrical.com</a>
+                  <a href="mailto:manikandan@sakthielectricals.com" style={{ color: "var(--fg-on-dark-2)" }}>manikandan@sakthielectricals.com</a>
                 </span>
               </div>
             </div>
