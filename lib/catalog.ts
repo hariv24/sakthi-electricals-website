@@ -193,8 +193,19 @@ function applyCustomOrder(node: CatalogNode): CatalogNode {
   return { ...node, children: sortedChildren.map(applyCustomOrder) };
 }
 
-// React cache ensures we only build the tree once per request
+// React cache ensures we only build the tree once per request.
+// In production, reads from pre-generated JSON (created by scripts/generate-catalog.mjs
+// during prebuild) so the lambda doesn't need the image files in its bundle.
 export const getCatalogTree = cache(async (): Promise<CatalogNode> => {
+  if (process.env.NODE_ENV === 'production') {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const data = require('./catalog-static.json');
+      return data as CatalogNode;
+    } catch {
+      // fall through to filesystem read if JSON not available
+    }
+  }
   const tree = await buildNode(CAT_ABS, CAT_REL, []);
   const remapped = remapSlugPaths(tree);
   return applyCustomOrder(remapped);
