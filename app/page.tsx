@@ -33,7 +33,7 @@ export default async function HomePage() {
 function HeroSection() {
   return (
     <section style={{ position: "relative", minHeight: "88vh", display: "flex", alignItems: "flex-end", overflow: "hidden", background: "var(--se-navy-900)" }}>
-      <video autoPlay muted loop playsInline poster="/assets/video-frame.png"
+      <video autoPlay muted loop playsInline
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}>
         <source src="/assets/hero.mp4" type="video/mp4" />
       </video>
