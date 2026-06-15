@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  outputFileTracingExcludes: {
+    "*": [
+      "./public/assets/CAT - 2026/**",
+    ],
+  },
 };
 
 export default nextConfig;
