@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { CustomerLogoGrid, CustomerSectorSection, CustomerCTASection } from "@/components/CustomerAnimSections";
 
 export const metadata = {
@@ -11,7 +9,6 @@ export const metadata = {
 export default function CustomersPage() {
   return (
     <>
-      <Header />
       <main style={{ flex: 1 }}>
 
         {/* Hero — CSS inline animations */}
@@ -34,7 +31,6 @@ export default function CustomersPage() {
         <CustomerCTASection />
 
       </main>
-      <Footer />
     </>
   );
 }

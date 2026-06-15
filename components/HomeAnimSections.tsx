@@ -10,6 +10,16 @@ import {
 import { useInView } from "@/lib/useInView";
 import { CountUp } from "@/components/CountUp";
 import { categories, customers, byCat } from "@/lib/data";
+import type { CatalogNode } from "@/lib/catalog";
+
+function toTitleCase(str: string) {
+  const LOWER = new Set(['and', 'or', 'for', 'of', 'the', 'a', 'an', 'in', 'at', 'by', 'to']);
+  return str.split(/\s+/).map((w, i) => {
+    const lc = w.toLowerCase();
+    if (i > 0 && LOWER.has(lc)) return lc;
+    return lc.charAt(0).toUpperCase() + lc.slice(1);
+  }).join(' ');
+}
 
 /* ---- About ---- */
 export function HomeAboutSection() {
@@ -20,12 +30,12 @@ export function HomeAboutSection() {
         <div style={{ display: "grid", gridTemplateColumns: "1.15fr .85fr", gap: 48, alignItems: "center" }} className="about-split">
           <div style={inView ? { animation: "slideInLeft 260ms var(--ease-out) both" } : {}}>
             <div className="eyebrow eb">About Sakthi Electricals</div>
-            <h2 style={{ marginTop: 12, maxWidth: "16ch" }}>Over 22 years of experience in this business.</h2>
+            <h2 style={{ marginTop: 12, maxWidth: "16ch" }}>Over 32 years of experience in this business.</h2>
             <p style={{ color: "var(--fg1)", fontWeight: 500, fontSize: "var(--fs-body-lg)", lineHeight: 1.62, marginTop: 20 }}>
               Sakthi Electricals, established in the year 2006, is an ISO 9001 certified company manufacturing a wide range of instrument transformers up to 33 kV, vibratory feeders, electrical control panels and EB HT &amp; LT service panels.
             </p>
             <p style={{ color: "var(--fg2)", fontSize: "var(--fs-body-lg)", lineHeight: 1.62, marginTop: 20 }}>
-              Our engineers have built 22 years of core competence in the manufacturing, design and development of test and measuring instrument transformers and industrial control panel products — on strong fundamentals, as per the latest IEC standards.
+              Our engineers have built 32 years of core competence in the manufacturing, design and development of test and measuring instrument transformers and industrial control panel products — on strong fundamentals, as per the latest IEC standards.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 32 }}>
               {[
@@ -47,7 +57,7 @@ export function HomeAboutSection() {
               <Image src="/assets/banners/about-home.jpg" alt="High-voltage instrument transformers at a substation" fill style={{ objectFit: "cover" }} />
             </div>
             <div style={{ position: "absolute", left: -20, bottom: -20, background: "var(--se-red)", color: "#fff", borderRadius: "var(--r-lg)", padding: "16px 20px", boxShadow: "var(--shadow-lg)" }}>
-              <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 40, lineHeight: .95, letterSpacing: "-.02em" }}>22<span style={{ opacity: .85 }}>+</span></div>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 40, lineHeight: .95, letterSpacing: "-.02em" }}>32<span style={{ opacity: .85 }}>+</span></div>
               <div style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11.5px", textTransform: "uppercase", letterSpacing: ".08em", color: "rgba(255,255,255,.85)", marginTop: 6 }}>Years of experience</div>
             </div>
           </div>
@@ -61,7 +71,7 @@ export function HomeAboutSection() {
 /* ---- Stats — counting numbers ---- */
 export function HomeStatsSection() {
   const stats = [
-    { icon: <Clock size={32} strokeWidth={1.75} />, to: 22, suffix: "+", k: "Years of experience" },
+    { icon: <Clock size={32} strokeWidth={1.75} />, to: 32, suffix: "+", k: "Years of experience" },
     { icon: <Users size={32} strokeWidth={1.75} />, to: 50000, suffix: "+", k: "Satisfied customers" },
     { icon: <Briefcase size={32} strokeWidth={1.75} />, to: 500, suffix: "+", k: "Consultants & contractors approvals" },
     { icon: <Award size={32} strokeWidth={1.75} />, to: 100, suffix: "+", k: "Type tested products" },
@@ -95,6 +105,96 @@ export function HomeStatsSection() {
         </div>
       </div>
       <style>{`@media(max-width:760px){.stat-icons-grid{grid-template-columns:1fr 1fr!important;gap:20px 0!important}.stat-icons-grid>div:nth-child(odd){border-left:none!important}}`}</style>
+    </section>
+  );
+}
+
+/* ---- Product families (catalog-driven, compact image cards) ---- */
+export function HomeProductsSection({ families }: { families: CatalogNode[] }) {
+  const { ref, inView } = useInView({ threshold: 0.08 });
+  return (
+    <section className="band band-alt" ref={ref as React.Ref<HTMLElement>}>
+      <div className="wrap-wide">
+
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div style={inView ? { animation: "slideUp 240ms var(--ease-out) both" } : {}}>
+            <div className="eyebrow eb">What we manufacture</div>
+            <h2 style={{ marginTop: 10, maxWidth: "22ch" }}>Eight product families, one factory floor.</h2>
+          </div>
+          <Link href="/products" className="btn btn-secondary"
+            style={{ flexShrink: 0, ...(inView ? { animation: "slideUp 240ms var(--ease-out) 60ms both" } : {}) }}>
+            <LayoutGrid size={17} /> Full catalogue
+          </Link>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10, marginTop: 28 }} className="prod-fam-grid">
+          {families.map((f, i) => {
+            const delay = Math.floor(i / 4) * 55 + (i % 4) * 38 + 60;
+            return (
+              <Link key={f.slug} href={`/products/${f.slugPath.join('/')}`}
+                className="prod-fam-cell"
+                style={{
+                  display: "flex", flexDirection: "column",
+                  background: "#fff",
+                  border: "1px solid var(--border)",
+                  borderRadius: "var(--r-lg)",
+                  overflow: "hidden",
+                  transition: "transform 160ms var(--ease), box-shadow 160ms var(--ease), border-color 160ms var(--ease)",
+                  ...(inView ? { animation: `scaleSettle 220ms var(--ease-out) ${delay}ms both` } : {}),
+                }}>
+
+                {/* Image area */}
+                <span style={{
+                  display: "block", height: 96,
+                  background: "var(--steel-50)",
+                  position: "relative", flexShrink: 0,
+                }}>
+                  {f.coverImage ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={f.coverImage} alt="" loading="lazy"
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", padding: "10px 14px" }} />
+                  ) : (
+                    <span style={{
+                      position: "absolute", inset: 0,
+                      backgroundImage: "linear-gradient(rgba(0,0,0,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.045) 1px,transparent 1px)",
+                      backgroundSize: "14px 14px",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <span style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 800, color: "rgba(0,0,0,.07)", letterSpacing: "-.02em" }}>
+                        {toTitleCase(f.display).charAt(0)}
+                      </span>
+                    </span>
+                  )}
+                  <span style={{
+                    position: "absolute", top: 7, left: 8,
+                    fontFamily: "var(--font-mono)", fontSize: "9.5px",
+                    color: "var(--fg3)", letterSpacing: ".06em",
+                  }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </span>
+
+                {/* Name row */}
+                <span style={{
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "10px 12px 11px",
+                  borderTop: "1px solid var(--border)",
+                }}>
+                  <span style={{
+                    fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 12.5,
+                    color: "var(--fg1)", lineHeight: 1.3,
+                  }}>
+                    {toTitleCase(f.display)}
+                  </span>
+                  <ChevronRight size={13} style={{ color: "var(--se-red)", flexShrink: 0, marginLeft: 6 }} />
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
+      </div>
+      <style>{`.prod-fam-cell:hover{transform:translateY(-3px)!important;box-shadow:var(--shadow-md)!important;border-color:var(--se-red)!important}@media(max-width:860px){.prod-fam-grid{grid-template-columns:repeat(2,1fr)!important}}`}</style>
     </section>
   );
 }
@@ -187,7 +287,7 @@ export function HomeCapabilitiesSection() {
 
 /* ---- Customers (logo marquee) ---- */
 export function HomeCustomersSection() {
-  const items = customers.slice(0, 15);
+  const items = customers;
   const doubled = [...items, ...items];
   return (
     <section className="band band-alt">

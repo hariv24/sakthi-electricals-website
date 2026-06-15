@@ -1,32 +1,31 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Box, ArrowRight } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { HeroStats } from "@/components/HeroStats";
 import {
   HomeAboutSection,
   HomeStatsSection,
-  HomeCategoriesSection,
+  HomeProductsSection,
   HomeCapabilitiesSection,
   HomeCustomersSection,
   HomeCTASection,
 } from "@/components/HomeAnimSections";
+import { getCatalogTree } from "@/lib/catalog";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const tree = await getCatalogTree();
+
   return (
     <>
-      <Header />
       <main style={{ flex: 1 }}>
         <HeroSection />
         <HomeAboutSection />
         <HomeStatsSection />
-        <HomeCategoriesSection />
+        <HomeProductsSection families={tree.children} />
         <HomeCapabilitiesSection />
         <HomeCustomersSection />
         <HomeCTASection />
       </main>
-      <Footer />
     </>
   );
 }
@@ -36,7 +35,7 @@ function HeroSection() {
     <section style={{ position: "relative", minHeight: "88vh", display: "flex", alignItems: "flex-end", overflow: "hidden", background: "var(--se-navy-900)" }}>
       <video autoPlay muted loop playsInline poster="/assets/video-frame.png"
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}>
-        <source src="/assets/hero-line.mp4" type="video/mp4" />
+        <source src="/assets/hero.mp4" type="video/mp4" />
       </video>
       <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(90deg,rgba(10,7,22,.86) 0%,rgba(10,7,22,.55) 42%,rgba(10,7,22,.12) 72%,rgba(10,7,22,0) 100%),linear-gradient(0deg,rgba(10,7,22,.82) 0%,rgba(10,7,22,.15) 38%,rgba(10,7,22,0) 60%)" }} />
       <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", opacity: .5, backgroundImage: "linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)", backgroundSize: "56px 56px", WebkitMaskImage: "radial-gradient(120% 90% at 18% 90%,#000 0%,transparent 75%)", maskImage: "radial-gradient(120% 90% at 18% 90%,#000 0%,transparent 75%)" }} />

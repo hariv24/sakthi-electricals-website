@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { MapPin, Phone, Mail, ShieldCheck, Send, CheckCircle2 } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { categories, byCat } from "@/lib/data";
 import { useInView } from "@/lib/useInView";
 
@@ -56,7 +54,6 @@ export default function ContactPage() {
 
   return (
     <>
-      <Header />
       <main style={{ flex: 1 }}>
 
         {/* Hero — CSS inline animations */}
@@ -92,7 +89,7 @@ export default function ContactPage() {
 
                 {error && (
                   <div style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(216,24,24,.06)", border: "1px solid rgba(216,24,24,.25)", color: "var(--se-red)", borderRadius: "var(--r-md)", padding: 20, fontSize: "14.5px", marginBottom: 24, animation: "slideUp 220ms var(--ease-out) both" }}>
-                    <Send size={18} style={{ flex: "none" }} /> Something went wrong — please try again or email us at <a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--se-red)", fontWeight: 600 }}>sakthi.electricals@yahoo.com</a>
+                    <Send size={18} style={{ flex: "none" }} /> Something went wrong — please try again or email us at <a href="mailto:sales@sakthielectrical.com" style={{ color: "var(--se-red)", fontWeight: 600 }}>sales@sakthielectrical.com</a>
                   </div>
                 )}
 
@@ -138,19 +135,19 @@ export default function ContactPage() {
                       {
                         icon: <MapPin size={18} style={{ color: "var(--se-gold)", marginTop: 2 }} />,
                         label: "Address",
-                        value: <>Plot No. 16, SIDCO Industrial Estate,<br />Mathur New, Mathur,<br />Pudukkottai&nbsp;–&nbsp;622515, Tamil Nadu, India</>,
+                        value: <>Plot No. 16, SIDCO Industrial Estate,<br />Mathur (New) Mathur,<br />Pudukkottai&nbsp;–&nbsp;622515, Tamil Nadu, India</>,
                         delay: 300,
                       },
                       {
                         icon: <Phone size={18} style={{ color: "var(--se-gold)", marginTop: 2 }} />,
                         label: "Phone",
-                        value: <><a href="tel:+917397726150" style={{ color: "#fff" }}>+91 73977 26150</a><br /><a href="tel:+917010170008" style={{ color: "var(--fg-on-dark-2)" }}>+91 70101 70008</a><br /><a href="tel:+917373711788" style={{ color: "var(--fg-on-dark-2)" }}>+91 73737 11788</a></>,
+                        value: <a href="tel:+919715211788" style={{ color: "#fff" }}>+91 97152 11788</a>,
                         delay: 380,
                       },
                       {
                         icon: <Mail size={18} style={{ color: "var(--se-gold)", marginTop: 2 }} />,
                         label: "Email",
-                        value: <a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--fg-on-dark-2)" }}>sakthi.electricals@yahoo.com</a>,
+                        value: <><a href="mailto:manikandan@sakthielectricals.com" style={{ color: "var(--fg-on-dark-2)" }}>manikandan@sakthielectricals.com</a><br /><a href="mailto:sales@sakthielectrical.com" style={{ color: "var(--fg-on-dark-2)" }}>sales@sakthielectrical.com</a></>,
                         delay: 460,
                       },
                     ].map((item, i) => (
@@ -189,7 +186,6 @@ export default function ContactPage() {
         </section>
 
       </main>
-      <Footer />
     </>
   );
 }

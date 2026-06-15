@@ -3,9 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Warehouse, Phone, Mail, Award } from "lucide-react";
-import { categories } from "@/lib/data";
+import type { MenuFamily } from "@/lib/catalog";
 
-export default function Footer() {
+export default function Footer({ menuData }: { menuData: MenuFamily[] }) {
   return (
     <footer style={{ background: "var(--surface-ink)", color: "var(--fg-on-dark)", padding: "80px 0 32px", borderTop: "3px solid var(--se-gold)" }}>
       <div className="wrap-wide">
@@ -30,12 +30,12 @@ export default function Footer() {
           <div>
             <h5 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "var(--se-gold-300)", margin: "0 0 16px" }}>Products</h5>
             <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 11 }}>
-              {categories.map(c => (
-                <li key={c.slug}>
-                  <Link href={`/products#${c.slug}`} style={{ fontSize: "14.5px", color: "var(--fg-on-dark)", transition: "color 200ms" }}
+              {menuData.map(family => (
+                <li key={family.slug}>
+                  <Link href={`/products/${family.slugPath.join("/")}`} style={{ fontSize: "14.5px", color: "var(--fg-on-dark)", transition: "color 200ms" }}
                     onMouseEnter={e => (e.currentTarget.style.color = "var(--se-gold)")}
                     onMouseLeave={e => (e.currentTarget.style.color = "var(--fg-on-dark)")}>
-                    {c.name}
+                    {family.display}
                   </Link>
                 </li>
               ))}
@@ -70,7 +70,7 @@ export default function Footer() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ display: "flex", gap: 11, alignItems: "flex-start", fontSize: 14, color: "var(--fg-on-dark-2)" }}>
                 <MapPin size={17} style={{ color: "var(--se-gold)", flex: "none", marginTop: 2 }} />
-                <span><b style={{ color: "#fff", fontWeight: 600 }}>Regd. Office cum Factory</b><br />Plot No. 16, SIDCO Industrial Estate, Mathur New, Mathur,<br />Pudukkottai&nbsp;–&nbsp;622515, Tamil Nadu, India</span>
+                <span><b style={{ color: "#fff", fontWeight: 600 }}>Regd. Office cum Factory</b><br />Plot No. 16, SIDCO Industrial Estate, Mathur (New) Mathur,<br />Pudukkottai&nbsp;–&nbsp;622515, Tamil Nadu, India</span>
               </div>
               <div style={{ display: "flex", gap: 11, alignItems: "flex-start", fontSize: 14, color: "var(--fg-on-dark-2)" }}>
                 <Warehouse size={17} style={{ color: "var(--se-gold)", flex: "none", marginTop: 2 }} />
@@ -80,13 +80,14 @@ export default function Footer() {
                 <Phone size={17} style={{ color: "var(--se-gold)", flex: "none", marginTop: 2 }} />
                 <span>
                   <b style={{ color: "#fff" }}><a href="tel:+919715211788" style={{ color: "#fff" }}>+91 97152 11788</a></b>
-                  {" · "}<a href="tel:+917010170008" style={{ color: "var(--fg-on-dark-2)" }}>+91 70101 70008</a>
-                  {" · "}<a href="tel:+917373711788" style={{ color: "var(--fg-on-dark-2)" }}>+91 73737 11788</a>
                 </span>
               </div>
               <div style={{ display: "flex", gap: 11, alignItems: "flex-start", fontSize: 14, color: "var(--fg-on-dark-2)" }}>
                 <Mail size={17} style={{ color: "var(--se-gold)", flex: "none", marginTop: 2 }} />
-                <a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--fg-on-dark-2)" }}>sakthi.electricals@yahoo.com</a>
+                <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <a href="mailto:manikandan@sakthielectricals.com" style={{ color: "var(--fg-on-dark-2)" }}>manikandan@sakthielectricals.com</a>
+                  <a href="mailto:sales@sakthielectrical.com" style={{ color: "var(--fg-on-dark-2)" }}>sales@sakthielectrical.com</a>
+                </span>
               </div>
             </div>
           </div>

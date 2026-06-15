@@ -1,125 +1,164 @@
-"use client";
+import Link from 'next/link';
+import { FileText, ChevronRight } from 'lucide-react';
+import { getCatalogTree, type CatalogNode } from '@/lib/catalog';
 
-import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
-import { ArrowRight, FileText } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { categories, byCat } from "@/lib/data";
+function FamilyCard({ node }: { node: CatalogNode }) {
+  const href = '/products/' + node.slugPath.join('/');
+  return (
+    <Link
+      href={href}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#fff',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--r-lg)',
+        overflow: 'hidden',
+        textDecoration: 'none',
+        transition: 'transform 180ms var(--ease), box-shadow 180ms var(--ease), border-color 180ms var(--ease)',
+      }}
+      className="family-card"
+    >
+      {/* Cover image */}
+      <span style={{
+        display: 'block',
+        aspectRatio: '16 / 10',
+        background: 'var(--steel-50)',
+        position: 'relative',
+        overflow: 'hidden',
+        borderBottom: '1px solid var(--border)',
+      }}>
+        {node.coverImage && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={node.coverImage}
+            alt={node.display}
+            loading="lazy"
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'contain', padding: 20,
+            }}
+          />
+        )}
+      </span>
 
-export default function ProductsPage() {
-  const [activeTab, setActiveTab] = useState("all");
+      {/* Body */}
+      <span style={{ padding: '18px 20px 20px', display: 'flex', flexDirection: 'column', flex: 1, gap: 8 }}>
+        <span style={{
+          fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17,
+          color: 'var(--fg1)', letterSpacing: '-0.01em', lineHeight: 1.2,
+        }}>
+          {node.display}
+        </span>
+        {node.children.length > 0 && (
+          <span style={{ fontSize: 13, color: 'var(--fg2)', lineHeight: 1.5 }}>
+            {node.children.map(c => c.display).slice(0, 3).join(' · ')}
+            {node.children.length > 3 && ` +${node.children.length - 3} more`}
+          </span>
+        )}
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 13,
+          color: 'var(--se-red)', marginTop: 'auto', paddingTop: 8,
+        }}>
+          Explore range <ChevronRight size={14} />
+        </span>
+      </span>
+    </Link>
+  );
+}
 
-  const allTabs = [
-    { slug: "all", name: "All Products", count: categories.reduce((s, c) => s + byCat(c.slug).length, 0) },
-    ...categories.map(c => ({ slug: c.slug, name: c.name, count: byCat(c.slug).length })),
-  ];
+export default async function ProductsPage() {
+  const root = await getCatalogTree();
+  const families = root.children;
 
   return (
     <>
-      <Header />
       <main style={{ flex: 1 }}>
 
-        {/* Hero — CSS inline animations */}
+        {/* Hero */}
         <section className="page-hero hero-photo">
-          <div className="hero-bg" style={{ backgroundImage: "url('/assets/banners/products.jpg')", backgroundPosition: "center 42%" }} />
+          <div
+            className="hero-bg"
+            style={{ backgroundImage: "url('/assets/banners/products.jpg')", backgroundPosition: 'center 42%' }}
+          />
           <div className="wrap-wide">
-            <div className="breadcrumb" style={{ animation: "fadeIn 300ms var(--ease-out) 100ms both" }}>
+            <div className="breadcrumb" style={{ animation: 'fadeIn 300ms var(--ease-out) 100ms both' }}>
               <Link href="/">Home</Link><span className="sep">/</span><span className="cur">Products</span>
             </div>
-            <div className="eyebrow eb" style={{ animation: "fadeSlideDown 360ms var(--ease-out) 200ms both" }}>The catalogue</div>
-            <h1 style={{ animation: "fadeSlideUp 440ms var(--ease-out) 350ms both" }}>Instrument transformers &amp; panels, built to your spec.</h1>
-            <p className="lead" style={{ animation: "fadeSlideUp 380ms var(--ease-out) 500ms both" }}>Nine product families manufactured in-house — from PVC tape and resin-cast current transformers to control, auto and potential transformers, 33 kV oil-cooled instrument transformers, vibratory feeders, epoxy insulators and complete LT/HT panels.</p>
+            <div className="eyebrow eb" style={{ animation: 'fadeSlideDown 360ms var(--ease-out) 200ms both' }}>
+              The catalogue
+            </div>
+            <h1 style={{ animation: 'fadeSlideUp 440ms var(--ease-out) 350ms both' }}>
+              Instrument transformers &amp; panels, built to your spec.
+            </h1>
+            <p className="lead" style={{ animation: 'fadeSlideUp 380ms var(--ease-out) 500ms both' }}>
+              {families.length} product families manufactured in-house — from current and control transformers
+              to electrical panels, epoxy insulators, vibratory feeders and solar metering panels.
+            </p>
           </div>
-          <div className="live-rule" style={{ transformOrigin: "left", animation: "rulerExtend 700ms var(--ease-out) 650ms both" }} />
+          <div
+            className="live-rule"
+            style={{ transformOrigin: 'left', animation: 'rulerExtend 700ms var(--ease-out) 650ms both' }}
+          />
           <style>{`@media(prefers-reduced-motion:reduce){.page-hero *{animation:none!important;opacity:1!important;transform:none!important}}`}</style>
         </section>
 
-        {/* Tab bar */}
-        <div style={{ position: "sticky", top: 76, zIndex: 40, background: "rgba(255,255,255,.92)", backdropFilter: "blur(10px)", borderBottom: "1px solid var(--border)" }}>
-          <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px" }}>
-            <div style={{ display: "flex", gap: 0, overflowX: "auto", scrollbarWidth: "none" }}>
-              {allTabs.map(t => (
-                <button key={t.slug} onClick={() => setActiveTab(t.slug)}
-                  style={{
-                    position: "relative", display: "inline-flex", alignItems: "center", gap: 8,
-                    fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 14,
-                    color: activeTab === t.slug ? "var(--se-red)" : "var(--fg2)",
-                    padding: "17px 2px", margin: "0 16px", whiteSpace: "nowrap",
-                    background: "transparent", border: 0,
-                    borderBottom: activeTab === t.slug ? "2px solid var(--se-red)" : "2px solid transparent",
-                    cursor: "pointer", transition: "color 200ms var(--ease), border-color 200ms var(--ease)",
-                  }}>
-                  {t.name}
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 500, color: activeTab === t.slug ? "var(--se-red)" : "var(--fg3)", background: activeTab === t.slug ? "rgba(216,24,24,.1)" : "var(--steel-100)", padding: "2px 7px", borderRadius: "var(--r-pill)" }}>{t.count}</span>
-                </button>
+        {/* Product families grid */}
+        <section className="band">
+          <div className="wrap-wide">
+            <div className="section-head">
+              <div className="eyebrow eb">What we manufacture</div>
+              <h2>{families.length} product families, one factory floor.</h2>
+              <p className="lead">
+                Select a product family to explore the full range, then drill into the exact type you need.
+              </p>
+            </div>
+            <div
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 40 }}
+              className="family-grid"
+            >
+              {families.map(node => (
+                <FamilyCard key={node.slug} node={node} />
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Catalogue */}
-        <main className="band" style={{ paddingTop: 0 }}>
-          <div className="wrap-wide">
-            {categories.map(c => {
-              const items = byCat(c.slug);
-              const hidden = activeTab !== "all" && activeTab !== c.slug;
-              if (hidden) return null;
-              return (
-                <section key={c.slug} id={c.slug} style={{ scrollMarginTop: 140, paddingTop: 48 }}>
-                  <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap", paddingBottom: 24, marginBottom: 32, borderBottom: "1px solid var(--border)" }}>
-                    <div style={{ maxWidth: 680 }}>
-                      <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--se-red)", letterSpacing: ".04em" }}>{c.eyebrow}</div>
-                      <h2 style={{ marginTop: 8 }}>{c.name}</h2>
-                      <p style={{ color: "var(--fg2)", fontSize: "15.5px", lineHeight: 1.55, marginTop: 10 }}>{c.blurb}</p>
-                    </div>
-                    <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--fg3)", whiteSpace: "nowrap" }}>{items.length} {items.length === 1 ? "model" : "models"}</div>
-                  </div>
-                  {/* key includes activeTab so grid remounts on tab switch, replaying the stagger animation */}
-                  <div className="product-grid" key={`${c.slug}-${activeTab}`}>
-                    {items.map((p, i) => (
-                      <Link key={p.slug} href={`/products/${p.slug}`}
-                        className={`pcard scroll-scale anim-d${Math.min(i, 7)}`}>
-                        <span className="pc-img">
-                          <span className="pc-cat">{p.categoryName}</span>
-                          <Image src={p.image} alt={p.fullName ?? p.name} width={300} height={225} style={{ maxWidth: "88%", maxHeight: "88%", objectFit: "contain" }} />
-                        </span>
-                        <span className="pc-body">
-                          <span className="pc-name">{p.name}</span>
-                          <span className="pc-sub">{p.sub} · {p.code}</span>
-                          <span className="pc-lead">{p.lead}</span>
-                          <span className="pc-tags">{p.tags.map(t => <span key={t} className="pc-tag">{t}</span>)}</span>
-                          <span className="pc-foot">
-                            <span className="pc-link">View product <ArrowRight size={15} /></span>
-                          </span>
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
-        </main>
+        </section>
 
         {/* CTA */}
         <section className="band-tight band-ink">
-          <div className="wrap-wide" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+          <div className="wrap-wide" style={{
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between', gap: 24, flexWrap: 'wrap',
+          }}>
             <div>
               <div className="eyebrow eb">Can&apos;t find your rating?</div>
               <h2 style={{ marginTop: 10 }}>We build to specification.</h2>
-              <p className="muted" style={{ marginTop: 8, maxWidth: "54ch" }}>Tell us your ratio, accuracy class, burden and standard — we&apos;ll engineer and quote the right unit.</p>
+              <p className="muted" style={{ marginTop: 8, maxWidth: '54ch' }}>
+                Tell us your ratio, accuracy class, burden and standard — we&apos;ll engineer and quote the right unit.
+              </p>
             </div>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <Link href="/contact" className="btn btn-primary btn-lg"><FileText size={18} /> Request a quote</Link>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <Link href="/contact" className="btn btn-primary btn-lg">
+                <FileText size={18} /> Request a quote
+              </Link>
               <Link href="/contact" className="btn btn-on-dark btn-lg">Talk to engineering</Link>
             </div>
           </div>
         </section>
 
       </main>
-      <Footer />
+
+      <style>{`
+        .family-card:hover {
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-md);
+          border-color: var(--border-strong) !important;
+        }
+        @media(max-width: 1000px) { .family-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media(max-width: 640px)  { .family-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </>
   );
 }

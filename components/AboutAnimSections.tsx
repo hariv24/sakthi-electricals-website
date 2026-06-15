@@ -15,9 +15,9 @@ export function AboutStorySection() {
         <div style={{ display: "grid", gridTemplateColumns: "1.1fr .9fr", gap: 48, alignItems: "start" }} className="story-grid">
           <div style={inView ? { animation: "slideInLeft 260ms var(--ease-out) both" } : {}}>
             <div className="eyebrow eb">Our story</div>
-            <h2 style={{ marginTop: 12, maxWidth: "18ch" }}>Over 22 years of experience in this business.</h2>
+            <h2 style={{ marginTop: 12, maxWidth: "18ch" }}>Over 32 years of experience in this business.</h2>
             <p style={{ color: "var(--fg1)", fontWeight: 500, fontSize: "var(--fs-body-lg)", lineHeight: 1.65, marginTop: 20 }}>
-              &quot;Sakthi Electricals&quot; started in the year 2006 with the vision to establish a name for itself in the field of manufacturing transformers. Our engineers have 22 years&apos; built-in core competence in the manufacturing, design and development of test and measuring instruments and industrial control products on strong fundamentals.
+              &quot;Sakthi Electricals&quot; started in the year 2006 with the vision to establish a name for itself in the field of manufacturing transformers. Our engineers have 32 years&apos; built-in core competence in the manufacturing, design and development of test and measuring instruments and industrial control products on strong fundamentals.
             </p>
             <p style={{ color: "var(--fg2)", fontSize: "var(--fs-body-lg)", lineHeight: 1.65, marginTop: 20 }}>We know the business of transformers, and our state-of-the-art technology guarantees unique products for an ever-growing portfolio of customers.</p>
             <p style={{ color: "var(--fg2)", fontSize: "var(--fs-body-lg)", lineHeight: 1.65, marginTop: 20 }}>We, the Sakthi Electricals, benchmark qualitative products and produce transformers of various technical applications, geared to meet specific customer requirements.</p>
@@ -65,10 +65,10 @@ export function AboutStatsStrip() {
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 46, lineHeight: 1, color: "#fff", letterSpacing: "-.02em" }}>2006</div>
             <div style={{ fontSize: 12, color: "var(--se-gold-300)", textTransform: "uppercase", letterSpacing: ".07em", fontWeight: 600, marginTop: 10 }}>Year established</div>
           </div>
-          {/* 22+ years */}
+          {/* 32+ years */}
           <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", padding: "8px 20px", borderLeft: "1px solid rgba(255,255,255,.14)" }}>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 46, lineHeight: 1, color: "#fff", letterSpacing: "-.02em" }}>
-              <CountUp to={22} duration={1400} delay={80} />
+              <CountUp to={32} duration={1400} delay={80} />
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 22, color: "var(--se-gold)", fontWeight: 500, marginLeft: 3 }}>+ yrs</span>
             </div>
             <div style={{ fontSize: 12, color: "var(--se-gold-300)", textTransform: "uppercase", letterSpacing: ".07em", fontWeight: 600, marginTop: 10 }}>Engineering experience</div>

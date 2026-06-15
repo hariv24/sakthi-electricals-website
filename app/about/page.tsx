@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import {
   AboutStorySection,
   AboutStatsStrip,
@@ -18,7 +16,6 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <>
-      <Header />
       <main style={{ flex: 1 }}>
 
         {/* Hero — CSS inline animations, above the fold */}
@@ -44,7 +41,6 @@ export default function AboutPage() {
         <AboutCTASection />
 
       </main>
-      <Footer />
     </>
   );
 }
