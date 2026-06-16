@@ -119,7 +119,7 @@ export function HomeProductsSection({ families }: { families: CatalogNode[] }) {
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <div style={inView ? { animation: "slideUp 240ms var(--ease-out) both" } : {}}>
             <div className="eyebrow eb">What we manufacture</div>
-            <h2 style={{ marginTop: 10, maxWidth: "22ch" }}>Eight product families, one factory floor.</h2>
+            <h2 style={{ marginTop: 10, maxWidth: "22ch" }}>{families.length} product {families.length === 1 ? 'family' : 'families'}, one factory floor.</h2>
           </div>
           <Link href="/products" className="btn btn-secondary"
             style={{ flexShrink: 0, ...(inView ? { animation: "slideUp 240ms var(--ease-out) 60ms both" } : {}) }}>

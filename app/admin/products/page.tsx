@@ -1,7 +1,8 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createNode, deleteNode } from '../_actions/products';
+import { createNode } from '../_actions/products';
+import SortableGrid from './SortableGrid';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, ChevronRight, Home, FolderOpen, Box } from 'lucide-react';
+import { Plus, ChevronRight, Home, Box } from 'lucide-react';
 
 type DBNode = {
   id: string; parent_id: string | null; name: string; slug: string;
@@ -128,84 +129,7 @@ export default async function ProductsAdminPage({
       )}
 
       {/* ── Cards grid ──────────────────────────────────────────── */}
-      {children.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
-          {children.map(node => (
-            <NodeCard key={node.id} node={node} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function NodeCard({ node }: { node: DBNode }) {
-  const isLeaf = node.is_leaf;
-  const coverSrc = node.cover_image_url ?? PLACEHOLDER;
-
-  return (
-    <div style={{ background: '#fff', border: '1px solid #e2e5ea', borderRadius: 14, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      {/* Image / Thumbnail */}
-      {isLeaf ? (
-        <Link href={`/admin/products/${node.id}`} style={{ display: 'block', textDecoration: 'none' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={coverSrc}
-            alt={node.name}
-            style={{ width: '100%', aspectRatio: '4/3', objectFit: 'contain', background: '#f8f9fa', padding: 16, display: 'block' }}
-          />
-        </Link>
-      ) : (
-        <Link href={`/admin/products?parent=${node.id}`} style={{ display: 'block', textDecoration: 'none' }}>
-          <div style={{ width: '100%', aspectRatio: '4/3', background: '#f0f4ff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            {node.cover_image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={node.cover_image_url}
-                alt={node.name}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }}
-              />
-            ) : (
-              <>
-                <FolderOpen size={40} color="#3b82f6" strokeWidth={1.5} />
-              </>
-            )}
-          </div>
-        </Link>
-      )}
-
-      {/* Card body */}
-      <div style={{ padding: '12px 14px 14px', flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {/* Badge */}
-        <div>
-          <span style={{ display: 'inline-block', fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 99, background: isLeaf ? '#f0fdf4' : '#eff6ff', color: isLeaf ? '#16a34a' : '#2563eb', border: `1px solid ${isLeaf ? '#bbf7d0' : '#bfdbfe'}`, textTransform: 'uppercase', letterSpacing: '.04em' }}>
-            {isLeaf ? 'Product' : 'Folder'}
-          </span>
-        </div>
-
-        {/* Name */}
-        <p style={{ fontSize: 14, fontWeight: 600, color: '#1a1a2e', margin: 0, lineHeight: 1.3 }}>
-          {node.name}
-        </p>
-
-        {/* Action buttons */}
-        <div style={{ display: 'flex', gap: 6, marginTop: 'auto', alignItems: 'stretch' }}>
-          {isLeaf ? (
-            <Link href={`/admin/products/${node.id}`} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#1a1a2e', color: '#fff', borderRadius: 7, padding: '7px 10px', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-              <Pencil size={11} /> Edit product
-            </Link>
-          ) : (
-            <Link href={`/admin/products?parent=${node.id}`} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: 7, padding: '7px 10px', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-              <FolderOpen size={11} /> Open folder
-            </Link>
-          )}
-          <form action={async () => { 'use server'; await deleteNode(node.id); }} style={{ display: 'flex' }}>
-            <button type="submit" className="admin-icon-btn" style={{ display: 'flex', alignItems: 'center', padding: '0 8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 7, cursor: 'pointer', color: '#dc2626' }}>
-              <Trash2 size={12} />
-            </button>
-          </form>
-        </div>
-      </div>
+      {children.length > 0 && <SortableGrid nodes={children} />}
     </div>
   );
 }

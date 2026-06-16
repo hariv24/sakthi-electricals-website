@@ -59,6 +59,17 @@ export async function saveOverview(nodeId: string, data: { heading: string; para
   revalidatePath('/products');
 }
 
+export async function reorderNodes(orderedIds: string[]) {
+  const sb = await createSupabaseServerClient();
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      sb.from('catalog_nodes').update({ order_index: index }).eq('id', id)
+    )
+  );
+  revalidatePath('/admin/products');
+  revalidatePath('/', 'layout');
+}
+
 export async function saveApplications(nodeId: string, apps: { title: string; body: string; icon_name?: string }[]) {
   const sb = await createSupabaseServerClient();
   await sb.from('product_applications').delete().eq('node_id', nodeId);
