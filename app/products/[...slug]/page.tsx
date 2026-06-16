@@ -51,24 +51,9 @@ function toYouTubeEmbed(url: string): string {
   return m ? `https://www.youtube.com/embed/${m[1]}` : '';
 }
 
-async function fetchDBData(slugPath: string[]) {
+async function fetchDBData(nodeId: string) {
   try {
     const sb = await createSupabaseServerClient();
-    let parentId: string | null = null;
-    let nodeId: string | null = null;
-    for (const slug of slugPath) {
-      let result: { data: { id: string } | null };
-      if (parentId === null) {
-        result = await sb.from('catalog_nodes').select('id').eq('slug', slug).is('parent_id', null).maybeSingle() as typeof result;
-      } else {
-        result = await sb.from('catalog_nodes').select('id').eq('slug', slug).eq('parent_id', parentId).maybeSingle() as typeof result;
-      }
-      const { data } = result;
-      if (!data) return null;
-      nodeId = data.id;
-      parentId = data.id;
-    }
-    if (!nodeId) return null;
     const [{ data: specs }, { data: overview }, { data: apps }, { data: videos }, { data: images }] = await Promise.all([
       sb.from('product_specs').select('label,value').eq('node_id', nodeId).order('order_index'),
       sb.from('product_overview').select('heading,paragraph_1,paragraph_2').eq('node_id', nodeId).maybeSingle(),
@@ -1327,7 +1312,7 @@ export default async function FolderPage({ params }: { params: Promise<{ slug: s
   const separatorStyle: CSSProperties = { color: 'var(--fg3)', margin: '0 6px', fontSize: 13 };
 
   if (dbNode.is_leaf) {
-    const db = await fetchDBData(slug);
+    const db = await fetchDBData(dbNode.id);
     return (
       <LeafProductPage
         node={makeNode(dbNode, slug)} crumbs={crumbs} separatorStyle={separatorStyle}

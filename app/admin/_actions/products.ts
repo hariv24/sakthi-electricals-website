@@ -1,5 +1,5 @@
 'use server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -22,6 +22,7 @@ export async function createNode(parentId: string | null, isLeaf: boolean) {
   if (error) throw new Error(error.message);
   revalidatePath('/admin/products');
   revalidatePath('/', 'layout');
+  updateTag('catalog');
   redirect(`/admin/products/${data.id}`);
 }
 
@@ -32,6 +33,7 @@ export async function updateNode(id: string, formData: FormData) {
   revalidatePath('/admin/products');
   revalidatePath('/products');
   revalidatePath('/', 'layout');
+  updateTag('catalog');
 }
 
 export async function deleteNode(id: string) {
@@ -40,6 +42,7 @@ export async function deleteNode(id: string) {
   revalidatePath('/admin/products');
   revalidatePath('/products');
   revalidatePath('/', 'layout');
+  updateTag('catalog');
   redirect('/admin/products');
 }
 
@@ -68,6 +71,7 @@ export async function reorderNodes(orderedIds: string[]) {
   );
   revalidatePath('/admin/products');
   revalidatePath('/', 'layout');
+  updateTag('catalog');
 }
 
 export async function saveApplications(nodeId: string, apps: { title: string; body: string; icon_name?: string }[]) {
