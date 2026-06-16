@@ -78,20 +78,21 @@ export default function SortableGrid({ nodes }: { nodes: DBNode[] }) {
 
             {/* Thumbnail */}
             {node.is_leaf ? (
-              <Link href={`/admin/products/${node.id}`} style={{ display: 'block', textDecoration: 'none' }}>
+              <Link href={`/admin/products/${node.id}`} draggable={false} style={{ display: 'block', textDecoration: 'none' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={node.cover_image_url ?? PLACEHOLDER}
                   alt={node.name}
+                  draggable={false}
                   style={{ width: '100%', aspectRatio: '4/3', objectFit: 'contain', background: '#f8f9fa', padding: 16, display: 'block' }}
                 />
               </Link>
             ) : (
-              <Link href={`/admin/products?parent=${node.id}`} style={{ display: 'block', textDecoration: 'none' }}>
+              <Link href={`/admin/products?parent=${node.id}`} draggable={false} style={{ display: 'block', textDecoration: 'none' }}>
                 <div style={{ width: '100%', aspectRatio: '4/3', background: '#f0f4ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {node.cover_image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={node.cover_image_url} alt={node.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }} />
+                    <img src={node.cover_image_url} alt={node.name} draggable={false} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }} />
                   ) : (
                     <FolderOpen size={40} color="#3b82f6" strokeWidth={1.5} />
                   )}
@@ -116,13 +117,13 @@ export default function SortableGrid({ nodes }: { nodes: DBNode[] }) {
                 {node.name}
               </p>
 
-              <div style={{ display: 'flex', gap: 6, marginTop: 'auto', alignItems: 'stretch' }}>
+              <div draggable={false} style={{ display: 'flex', gap: 6, marginTop: 'auto', alignItems: 'stretch' }}>
                 {node.is_leaf ? (
-                  <Link href={`/admin/products/${node.id}`} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#1a1a2e', color: '#fff', borderRadius: 7, padding: '7px 10px', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                  <Link href={`/admin/products/${node.id}`} draggable={false} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#1a1a2e', color: '#fff', borderRadius: 7, padding: '7px 10px', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
                     <Pencil size={11} /> Edit product
                   </Link>
                 ) : (
-                  <Link href={`/admin/products?parent=${node.id}`} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: 7, padding: '7px 10px', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                  <Link href={`/admin/products?parent=${node.id}`} draggable={false} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, background: '#eff6ff', color: '#2563eb', border: '1px solid #bfdbfe', borderRadius: 7, padding: '7px 10px', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
                     <FolderOpen size={11} /> Open folder
                   </Link>
                 )}
