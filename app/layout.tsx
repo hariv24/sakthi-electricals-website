@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import ScrollToTop from "@/components/ScrollToTop";
-import { getCatalogTree, extractMenuData } from "@/lib/catalog";
+import ConditionalLayout from "@/components/ConditionalLayout";
+import { getCatalogTreeFromDB, extractMenuData } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Sakthi Electricals — Instrument Transformer People",
@@ -17,16 +15,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const tree = await getCatalogTree();
+  const tree = await getCatalogTreeFromDB();
   const menuData = extractMenuData(tree);
 
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <ScrollToTop />
-        <Header menuData={menuData} />
-        {children}
-        <Footer menuData={menuData} />
+        <ConditionalLayout menuData={menuData}>
+          {children}
+        </ConditionalLayout>
       </body>
     </html>
   );

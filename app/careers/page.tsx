@@ -5,7 +5,7 @@ import { useState, FormEvent } from "react";
 import { Send, CheckCircle2, Briefcase, Wrench, Users, Award } from "lucide-react";
 import { useInView } from "@/lib/useInView";
 
-const WEBHOOK = "https://n8n-production-b18ce.up.railway.app/webhook/website-enquiry";
+const API_ROUTE = "/api/careers";
 
 const ROLES = [
   "Winding Operator – Transformer",
@@ -71,21 +71,11 @@ export default function CareersPage() {
     setError(false);
 
     const data = new FormData(form);
-    const body = {
-      name:        data.get("name") as string,
-      email:       data.get("email") as string,
-      phone:       data.get("phone") as string,
-      role:        data.get("role") as string,
-      experience:  data.get("experience") as string,
-      requirement: data.get("message") as string,
-      source:      "Careers",
-    };
 
     try {
-      const res = await fetch(WEBHOOK, {
+      const res = await fetch(API_ROUTE, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: data,
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setSubmitted(true);
@@ -214,6 +204,10 @@ export default function CareersPage() {
                     delay={formInView ? fieldDelays[5] : 0}
                   >
                     <textarea name="message" required placeholder="Briefly describe your background and what you're looking for…" style={{ minHeight: 110 }} />
+                  </Field>
+
+                  <Field label="Resume / CV" hint="Optional — PDF, DOC, or DOCX. Max 5 MB." delay={formInView ? 530 : 0}>
+                    <input type="file" name="resume" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style={{ padding: "9px 12px", cursor: "pointer" }} />
                   </Field>
 
                   <div style={formInView ? { animation: `slideUp 220ms var(--ease-out) 560ms both` } : {}}>

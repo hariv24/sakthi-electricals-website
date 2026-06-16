@@ -9,10 +9,17 @@ import {
   HomeCustomersSection,
   HomeCTASection,
 } from "@/components/HomeAnimSections";
-import { getCatalogTree } from "@/lib/catalog";
+import NewsSection from "@/components/NewsSection";
+import { getCatalogTreeFromDB } from "@/lib/catalog";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function HomePage() {
-  const tree = await getCatalogTree();
+  const [tree, sb] = await Promise.all([getCatalogTreeFromDB(), createSupabaseServerClient()]);
+  const { data: news } = await sb
+    .from("news_items")
+    .select("*")
+    .order("published_date", { ascending: false })
+    .limit(3);
 
   return (
     <>
@@ -22,6 +29,7 @@ export default async function HomePage() {
         <HomeStatsSection />
         <HomeProductsSection families={tree.children} />
         <HomeCapabilitiesSection />
+        {news && news.length > 0 && <NewsSection items={news} />}
         <HomeCustomersSection />
         <HomeCTASection />
       </main>
@@ -52,10 +60,8 @@ function HeroSection() {
           <Link href="/products" className="btn btn-primary btn-lg"><Box size={18} /> Explore products</Link>
           <Link href="/contact" className="btn btn-on-dark btn-lg">Request a quote <ArrowRight size={18} /></Link>
         </div>
-        {/* HeroStats is a client component — numbers count up after text has appeared */}
         <HeroStats />
       </div>
-      {/* Live rule extends last — technical drawing being completed */}
       <div style={{ position: "absolute", left: 0, bottom: 0, height: 3, width: "100%", zIndex: 3, background: "linear-gradient(90deg,var(--se-red) 0%,var(--se-red) 38%,var(--se-gold) 38%,var(--se-gold) 50%,transparent 50%)", transformOrigin: "left", animation: "rulerExtend 600ms var(--ease-out) 900ms both" }} />
       <style>{`@media(prefers-reduced-motion:reduce){.hero *{animation:none!important;opacity:1!important;transform:none!important}}`}</style>
     </section>

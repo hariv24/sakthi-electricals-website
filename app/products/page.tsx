@@ -1,60 +1,52 @@
 import Link from 'next/link';
 import { FileText, ChevronRight } from 'lucide-react';
-import { getCatalogTree, type CatalogNode } from '@/lib/catalog';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-function FamilyCard({ node }: { node: CatalogNode }) {
-  const href = '/products/' + node.slugPath.join('/');
+type DBFamily = {
+  id: string;
+  name: string;
+  slug: string;
+  cover_image_url: string | null;
+  children: { name: string }[];
+};
+
+function FamilyCard({ family }: { family: DBFamily }) {
+  const href = '/products/' + family.slug;
   return (
     <Link
       href={href}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        background: '#fff',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--r-lg)',
-        overflow: 'hidden',
-        textDecoration: 'none',
+        display: 'flex', flexDirection: 'column',
+        background: '#fff', border: '1px solid var(--border)',
+        borderRadius: 'var(--r-lg)', overflow: 'hidden', textDecoration: 'none',
         transition: 'transform 180ms var(--ease), box-shadow 180ms var(--ease), border-color 180ms var(--ease)',
       }}
       className="family-card"
     >
-      {/* Cover image */}
       <span style={{
-        display: 'block',
-        aspectRatio: '16 / 10',
-        background: 'var(--steel-50)',
-        position: 'relative',
-        overflow: 'hidden',
-        borderBottom: '1px solid var(--border)',
+        display: 'block', aspectRatio: '16 / 10',
+        background: 'var(--steel-50)', position: 'relative',
+        overflow: 'hidden', borderBottom: '1px solid var(--border)',
       }}>
-        {node.coverImage && (
+        {family.cover_image_url && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={node.coverImage}
-            alt={node.display}
+            src={family.cover_image_url}
+            alt={family.name}
             loading="lazy"
-            style={{
-              position: 'absolute', inset: 0,
-              width: '100%', height: '100%',
-              objectFit: 'contain', padding: 20,
-            }}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: 20 }}
           />
         )}
       </span>
 
-      {/* Body */}
       <span style={{ padding: '18px 20px 20px', display: 'flex', flexDirection: 'column', flex: 1, gap: 8 }}>
-        <span style={{
-          fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17,
-          color: 'var(--fg1)', letterSpacing: '-0.01em', lineHeight: 1.2,
-        }}>
-          {node.display}
+        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, color: 'var(--fg1)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>
+          {family.name}
         </span>
-        {node.children.length > 0 && (
+        {family.children.length > 0 && (
           <span style={{ fontSize: 13, color: 'var(--fg2)', lineHeight: 1.5 }}>
-            {node.children.map(c => c.display).slice(0, 3).join(' · ')}
-            {node.children.length > 3 && ` +${node.children.length - 3} more`}
+            {family.children.map(c => c.name).slice(0, 3).join(' · ')}
+            {family.children.length > 3 && ` +${family.children.length - 3} more`}
           </span>
         )}
         <span style={{
@@ -70,8 +62,29 @@ function FamilyCard({ node }: { node: CatalogNode }) {
 }
 
 export default async function ProductsPage() {
-  const root = await getCatalogTree();
-  const families = root.children;
+  const sb = await createSupabaseServerClient();
+
+  const { data: rootNodes } = await sb
+    .from('catalog_nodes').select('id,name,slug,cover_image_url')
+    .is('parent_id', null).order('order_index');
+
+  const parentIds = (rootNodes ?? []).map(n => n.id);
+  const { data: allChildren } = parentIds.length
+    ? await sb.from('catalog_nodes').select('name,parent_id').in('parent_id', parentIds).order('order_index')
+    : { data: [] as { name: string; parent_id: string }[] };
+
+  const childMap = new Map<string, { name: string }[]>();
+  for (const c of allChildren ?? []) {
+    const list = childMap.get(c.parent_id) ?? [];
+    list.push({ name: c.name });
+    childMap.set(c.parent_id, list);
+  }
+
+  const families: DBFamily[] = (rootNodes ?? []).map(n => ({
+    id: n.id, name: n.name, slug: n.slug,
+    cover_image_url: n.cover_image_url,
+    children: childMap.get(n.id) ?? [],
+  }));
 
   return (
     <>
@@ -119,8 +132,8 @@ export default async function ProductsPage() {
               style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 40 }}
               className="family-grid"
             >
-              {families.map(node => (
-                <FamilyCard key={node.slug} node={node} />
+              {families.map(family => (
+                <FamilyCard key={family.id} family={family} />
               ))}
             </div>
           </div>

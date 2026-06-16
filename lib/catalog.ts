@@ -211,6 +211,62 @@ export const getCatalogTree = cache(async (): Promise<CatalogNode> => {
   return applyCustomOrder(remapped);
 });
 
+/**
+ * Reads the catalog tree from Supabase instead of the filesystem.
+ * Use this in the public layout and home page so newly added products appear immediately.
+ */
+export const getCatalogTreeFromDB = cache(async (): Promise<CatalogNode> => {
+  const { createSupabaseAdminClient } = await import('./supabase/server');
+  const admin = await createSupabaseAdminClient();
+
+  type Row = {
+    id: string; parent_id: string | null; name: string;
+    slug: string; is_leaf: boolean; order_index: number; cover_image_url: string | null;
+  };
+  const { data } = await admin
+    .from('catalog_nodes')
+    .select('id, parent_id, name, slug, is_leaf, order_index, cover_image_url')
+    .order('order_index');
+  const rows: Row[] = (data as Row[]) ?? [];
+
+  // Build a node for each DB row
+  const nodeMap = new Map<string, CatalogNode>();
+  const rowMap = new Map<string, Row>();
+  for (const r of rows) {
+    nodeMap.set(r.id, {
+      name: r.name, display: r.name, slug: r.slug,
+      slugPath: [], relPath: '', images: [],
+      coverImage: r.cover_image_url ?? null,
+      totalImages: 0, children: [],
+    });
+    rowMap.set(r.id, r);
+  }
+
+  // Link children to parents; top-level nodes go under root
+  const root: CatalogNode = {
+    name: 'root', display: 'Products', slug: '', slugPath: [],
+    relPath: '', images: [], coverImage: null, totalImages: 0, children: [],
+  };
+  for (const r of rows) {
+    const node = nodeMap.get(r.id)!;
+    if (r.parent_id === null) {
+      root.children.push(node);
+    } else {
+      const parent = nodeMap.get(r.parent_id);
+      if (parent) parent.children.push(node);
+    }
+  }
+
+  // Fill slugPath recursively now that the tree is assembled
+  function fillSlugPaths(node: CatalogNode, parentPath: string[]) {
+    node.slugPath = [...parentPath, node.slug];
+    for (const child of node.children) fillSlugPaths(child, node.slugPath);
+  }
+  for (const child of root.children) fillSlugPaths(child, []);
+
+  return root;
+});
+
 /** Find a node by its full slug path array (e.g. ["instrument-transformers", "current-transformers"]) */
 export function findBySlugPath(
   root: CatalogNode,

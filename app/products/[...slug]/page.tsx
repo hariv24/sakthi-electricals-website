@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { CSSProperties } from 'react';
 import {
-  FileText, ChevronRight, Phone,
+  FileText, ChevronRight,
   Gauge, Shield, Zap, Cpu, BarChart2, Cable,
   Factory, Wrench, Activity, Sun, Wind, Package, Layers, Settings,
 } from 'lucide-react';
@@ -14,6 +14,7 @@ import {
   getAllSlugPaths,
   type CatalogNode,
 } from '@/lib/catalog';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 /* ── constants ──────────────────────────────────────────────────────────────── */
 
@@ -43,6 +44,48 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 function imgUrl(relPath: string, img: string) {
   return encodeURI('/' + relPath + '/' + img);
+}
+
+function toYouTubeEmbed(url: string): string {
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : '';
+}
+
+async function fetchDBData(slugPath: string[]) {
+  try {
+    const sb = await createSupabaseServerClient();
+    let parentId: string | null = null;
+    let nodeId: string | null = null;
+    for (const slug of slugPath) {
+      let result: { data: { id: string } | null };
+      if (parentId === null) {
+        result = await sb.from('catalog_nodes').select('id').eq('slug', slug).is('parent_id', null).maybeSingle() as typeof result;
+      } else {
+        result = await sb.from('catalog_nodes').select('id').eq('slug', slug).eq('parent_id', parentId).maybeSingle() as typeof result;
+      }
+      const { data } = result;
+      if (!data) return null;
+      nodeId = data.id;
+      parentId = data.id;
+    }
+    if (!nodeId) return null;
+    const [{ data: specs }, { data: overview }, { data: apps }, { data: videos }, { data: images }] = await Promise.all([
+      sb.from('product_specs').select('label,value').eq('node_id', nodeId).order('order_index'),
+      sb.from('product_overview').select('heading,paragraph_1,paragraph_2').eq('node_id', nodeId).maybeSingle(),
+      sb.from('product_applications').select('title,body,icon_name').eq('node_id', nodeId).order('order_index'),
+      sb.from('product_videos').select('youtube_url').eq('node_id', nodeId).order('order_index').limit(1),
+      sb.from('product_images').select('url').eq('node_id', nodeId).order('order_index'),
+    ]);
+    return {
+      specs: specs?.length ? (specs as {label:string;value:string}[]).map(r => [r.label, r.value] as [string,string]) : null,
+      overview: overview ?? null,
+      apps: apps?.length ? (apps as {title:string;body:string;icon_name?:string}[]) : null,
+      videoUrl: videos?.[0]?.youtube_url ?? null,
+      images: images?.length ? (images as {url:string}[]).map(r => r.url) : null,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function isUnlimited(slugPath: string[]) {
@@ -969,8 +1012,10 @@ function getOverview(node: CatalogNode, slugPath: string[]): OverviewContent {
 
 /* ── Shared section components ──────────────────────────────────────────────── */
 
-function OverviewSection({ node, slugPath }: { node: CatalogNode; slugPath: string[] }) {
-  const { heading, paragraphs } = getOverview(node, slugPath);
+function OverviewSection({ node, slugPath, dbContent }: { node: CatalogNode; slugPath: string[]; dbContent?: { heading: string; paragraph_1: string; paragraph_2?: string | null } | null }) {
+  const { heading, paragraphs } = dbContent
+    ? { heading: dbContent.heading, paragraphs: [dbContent.paragraph_1, dbContent.paragraph_2].filter(Boolean) as string[] }
+    : getOverview(node, slugPath);
   return (
     <div style={{ background: 'var(--steel-50)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
       <div className="band">
@@ -1096,19 +1141,36 @@ function CTABand() {
 
 function LeafProductPage({
   node, crumbs, separatorStyle, unlimited, slug,
+  dbImages, dbSpecs, dbOverview, dbApps, dbVideoUrl,
 }: {
   node: CatalogNode;
   crumbs: { display: string; href: string }[];
   separatorStyle: CSSProperties;
   unlimited: boolean;
   slug: string[];
+  dbImages?: string[];
+  dbSpecs?: [string, string][];
+  dbOverview?: { heading: string; paragraph_1: string; paragraph_2?: string | null } | null;
+  dbApps?: { title: string; body: string; icon_name?: string }[];
+  dbVideoUrl?: string | null;
 }) {
   const limit = unlimited ? undefined : MAX_PHOTOS;
-  const rawImages = (limit ? node.images.slice(0, limit) : node.images)
-    .map(img => imgUrl(node.relPath, img));
-  const galleryImages = rawImages.length > 0 ? rawImages : [PLACEHOLDER];
-  const specRows = getSpecRows(node, slug);
-  const apps = getApplications(node, slug);
+  const fsImages = (limit ? node.images.slice(0, limit) : node.images).map(img => imgUrl(node.relPath, img));
+  const galleryImages = (dbImages && dbImages.length > 0 ? dbImages : fsImages.length > 0 ? fsImages : [PLACEHOLDER]);
+  const specRows: [string, string][] = dbSpecs && dbSpecs.length > 0 ? dbSpecs : getSpecRows(node, slug);
+  const ICON_MAP: Record<string, React.ReactNode> = {
+    Zap: <Zap size={26} strokeWidth={1.5}/>, Gauge: <Gauge size={26} strokeWidth={1.5}/>,
+    Shield: <Shield size={26} strokeWidth={1.5}/>, BarChart2: <BarChart2 size={26} strokeWidth={1.5}/>,
+    Cable: <Cable size={26} strokeWidth={1.5}/>, Factory: <Factory size={26} strokeWidth={1.5}/>,
+    Wrench: <Wrench size={26} strokeWidth={1.5}/>, Cpu: <Cpu size={26} strokeWidth={1.5}/>,
+    Activity: <Activity size={26} strokeWidth={1.5}/>, Sun: <Sun size={26} strokeWidth={1.5}/>,
+    Layers: <Layers size={26} strokeWidth={1.5}/>, Settings: <Settings size={26} strokeWidth={1.5}/>,
+    Package: <Package size={26} strokeWidth={1.5}/>, Wind: <Wind size={26} strokeWidth={1.5}/>,
+  };
+  const apps: AppItem[] = dbApps && dbApps.length > 0
+    ? dbApps.map(a => ({ icon: ICON_MAP[a.icon_name ?? 'Zap'] ?? <Zap size={26} strokeWidth={1.5}/>, title: a.title, body: a.body }))
+    : getApplications(node, slug);
+  const embedUrl = dbVideoUrl ? toYouTubeEmbed(dbVideoUrl) : null;
 
   return (
     <>
@@ -1121,8 +1183,10 @@ function LeafProductPage({
           <div className="wrap-wide">
             <div style={{ display: 'grid', gridTemplateColumns: '55% 1fr', gap: 48, alignItems: 'start' }} className="product-detail-grid">
 
-              {/* Left: hero image + thumbnails */}
-              <ProductGallery images={galleryImages} productName={node.display} />
+              {/* Left: hero image + optional video + thumbnails */}
+              <div>
+                <ProductGallery images={galleryImages} productName={node.display} embedUrl={embedUrl ?? undefined} />
+              </div>
 
               {/* Right: specs table + CTA buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -1149,14 +1213,6 @@ function LeafProductPage({
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                  <Link href="/contact" className="btn btn-primary">
-                    <FileText size={16} /> Request a quote
-                  </Link>
-                  <a href="tel:+917397726150" className="btn btn-outline">
-                    <Phone size={16} /> Call engineering
-                  </a>
-                </div>
               </div>
 
             </div>
@@ -1164,7 +1220,7 @@ function LeafProductPage({
         </div>
 
         {/* Block 2: Overview — full width */}
-        <OverviewSection node={node} slugPath={slug} />
+        <OverviewSection node={node} slugPath={slug} dbContent={dbOverview} />
 
         {/* Block 3: Applications — full width, 4 items */}
         <ApplicationsSection items={apps} />
@@ -1234,19 +1290,79 @@ function FolderPageContent({
 
 /* ── Page entry point ───────────────────────────────────────────────────────── */
 
+type DBSlice = { id: string; name: string; slug: string; is_leaf: boolean; cover_image_url: string | null };
+
+function makeNode(n: DBSlice, path: string[], kids: CatalogNode[] = []): CatalogNode {
+  return {
+    name: n.name, display: n.name, slug: n.slug,
+    slugPath: path, relPath: path.join('/'),
+    images: [], coverImage: n.cover_image_url,
+    totalImages: 0, children: kids,
+  };
+}
+
 export default async function FolderPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
-  const root = await getCatalogTree();
-  const node = findBySlugPath(root, slug);
-  if (!node) notFound();
+  const sb = await createSupabaseServerClient();
 
-  const crumbs = getBreadcrumb(root, slug);
+  // Traverse catalog_nodes by slug path — works for both existing and newly created nodes
+  let parentId: string | null = null;
+  const trail: DBSlice[] = [];
+  for (const s of slug) {
+    const { data } = (parentId !== null
+      ? await sb.from('catalog_nodes').select('id,name,slug,is_leaf,cover_image_url').eq('slug', s).eq('parent_id', parentId).maybeSingle()
+      : await sb.from('catalog_nodes').select('id,name,slug,is_leaf,cover_image_url').eq('slug', s).is('parent_id', null).maybeSingle()
+    ) as { data: DBSlice | null };
+    if (!data) notFound();
+    trail.push(data);
+    parentId = data.id;
+  }
+
+  const dbNode = trail[trail.length - 1];
+  const crumbs = trail.map((t, i) => ({
+    display: t.name,
+    href: '/products/' + slug.slice(0, i + 1).join('/'),
+  }));
   const unlimited = isUnlimited(slug);
   const separatorStyle: CSSProperties = { color: 'var(--fg3)', margin: '0 6px', fontSize: 13 };
 
-  if (node.children.length === 0) {
-    return <LeafProductPage node={node} crumbs={crumbs} separatorStyle={separatorStyle} unlimited={unlimited} slug={slug} />;
+  if (dbNode.is_leaf) {
+    const db = await fetchDBData(slug);
+    return (
+      <LeafProductPage
+        node={makeNode(dbNode, slug)} crumbs={crumbs} separatorStyle={separatorStyle}
+        unlimited={unlimited} slug={slug}
+        dbImages={db?.images ?? undefined}
+        dbSpecs={db?.specs ?? undefined}
+        dbOverview={db?.overview ?? undefined}
+        dbApps={db?.apps ?? undefined}
+        dbVideoUrl={db?.videoUrl ?? undefined}
+      />
+    );
   }
 
-  return <FolderPageContent node={node} crumbs={crumbs} slug={slug} separatorStyle={separatorStyle} unlimited={unlimited} />;
+  // Folder: load direct children
+  const { data: rawChildren } = await sb
+    .from('catalog_nodes').select('id,name,slug,is_leaf,cover_image_url')
+    .eq('parent_id', dbNode.id).order('order_index');
+  const kids = (rawChildren ?? []) as DBSlice[];
+
+  // Load grandchild counts in one query so subfolder cards show "N types"
+  const kidIds = kids.map(k => k.id);
+  const { data: gcRows } = kidIds.length
+    ? await sb.from('catalog_nodes').select('parent_id').in('parent_id', kidIds)
+    : { data: [] as { parent_id: string }[] };
+  const gcCount = new Map<string, number>();
+  for (const g of gcRows ?? []) gcCount.set(g.parent_id, (gcCount.get(g.parent_id) ?? 0) + 1);
+
+  const childNodes: CatalogNode[] = kids.map(k =>
+    makeNode(k, [...slug, k.slug], Array.from({ length: gcCount.get(k.id) ?? 0 }) as CatalogNode[])
+  );
+
+  return (
+    <FolderPageContent
+      node={makeNode(dbNode, slug, childNodes)}
+      crumbs={crumbs} slug={slug} separatorStyle={separatorStyle} unlimited={unlimited}
+    />
+  );
 }
