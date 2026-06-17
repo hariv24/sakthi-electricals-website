@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import ScrollToTop from './ScrollToTop';
+import VisitorTracker from './VisitorTracker';
 import type { MenuFamily } from '@/lib/catalog';
 
 export default function ConditionalLayout({
@@ -17,6 +18,7 @@ export default function ConditionalLayout({
   return (
     <>
       <ScrollToTop />
+      <VisitorTracker />
       <Header menuData={menuData} />
       {children}
       <Footer menuData={menuData} />

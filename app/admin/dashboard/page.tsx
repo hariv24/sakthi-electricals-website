@@ -2,7 +2,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import {
   Box, FolderTree, Newspaper, Users, ImageOff, Clock,
-  Plus, FilePlus2, FolderPlus, ArrowUpRight,
+  Plus, FilePlus2, FolderPlus, ArrowUpRight, Eye, Timer,
 } from 'lucide-react';
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -35,6 +35,7 @@ export default async function DashboardPage() {
     { data: appRows },
     { count: appCount },
     { count: newAppCount },
+    { data: views },
   ] = await Promise.all([
     sb.from('catalog_nodes').select('id, name, is_leaf, cover_image_url, created_at').order('created_at', { ascending: false }),
     sb.from('news_items').select('id, title, created_at').order('created_at', { ascending: false }).limit(5),
@@ -42,12 +43,42 @@ export default async function DashboardPage() {
     sb.from('career_applications').select('id, name, role, created_at').order('created_at', { ascending: false }).limit(5),
     sb.from('career_applications').select('id', { count: 'exact', head: true }),
     sb.from('career_applications').select('id', { count: 'exact', head: true }).gte('created_at', weekAgo),
+    sb.from('page_views').select('visitor_id, session_id, created_at').gte('created_at', weekAgo),
   ]);
 
   const allNodes = nodes ?? [];
   const products = allNodes.filter(n => n.is_leaf);
   const folders = allNodes.filter(n => !n.is_leaf);
   const missingPhotos = products.filter(p => !p.cover_image_url);
+
+  // ── Visitor stats (last 7 days, from our own page_views table) ──────────
+  const weekViews = views ?? [];
+  const startOfToday = new Date(); startOfToday.setHours(0, 0, 0, 0);
+  const todayViews = weekViews.filter(v => new Date(v.created_at) >= startOfToday);
+  const visitorsToday = new Set(todayViews.map(v => v.visitor_id)).size;
+  const visitorsThisWeek = new Set(weekViews.map(v => v.visitor_id)).size;
+
+  const dayBuckets: { label: string; count: number }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const day = new Date(); day.setHours(0, 0, 0, 0); day.setDate(day.getDate() - i);
+    const next = new Date(day); next.setDate(day.getDate() + 1);
+    const count = new Set(
+      weekViews.filter(v => { const t = new Date(v.created_at); return t >= day && t < next; }).map(v => v.visitor_id)
+    ).size;
+    dayBuckets.push({ label: day.toLocaleDateString('en-IN', { weekday: 'short' }), count });
+  }
+  const maxBucket = Math.max(1, ...dayBuckets.map(d => d.count));
+
+  const sessions = new Map<string, { min: number; max: number }>();
+  for (const v of weekViews) {
+    const t = new Date(v.created_at).getTime();
+    const s = sessions.get(v.session_id);
+    if (!s) sessions.set(v.session_id, { min: t, max: t });
+    else { s.min = Math.min(s.min, t); s.max = Math.max(s.max, t); }
+  }
+  const durations = Array.from(sessions.values()).map(s => (s.max - s.min) / 1000);
+  const avgDurationSec = durations.length ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
+  const avgDurationLabel = avgDurationSec < 60 ? `${Math.round(avgDurationSec)}s` : `${Math.round(avgDurationSec / 60)}m`;
 
   const cards = [
     { label: 'Products', value: products.length, href: '/admin/products', icon: Box, color: '#2563eb', bg: '#eff6ff' },
@@ -115,6 +146,42 @@ export default async function DashboardPage() {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* ── Visitors ────────────────────────────────────────────────── */}
+      <div style={{ background: '#fff', border: '1px solid #e2e5ea', borderRadius: 16, overflow: 'hidden', marginBottom: 20 }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e5ea', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Eye size={15} color="#6b7280" />
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e' }}>Website visitors</span>
+          <span style={{ fontSize: 11.5, color: '#9ca3af' }}>· last 7 days</span>
+        </div>
+        <div style={{ padding: 20, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 24, alignItems: 'center' }} className="visitor-grid">
+          <div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#1a1a2e' }}>{visitorsToday}</div>
+            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>Visitors today</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#1a1a2e' }}>{visitorsThisWeek}</div>
+            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>Visitors this week</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Timer size={16} color="#9ca3af" /> {avgDurationLabel}
+            </div>
+            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>Avg. time on site (approx.)</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 48 }}>
+            {dayBuckets.map(d => (
+              <div key={d.label} title={`${d.label}: ${d.count} visitor${d.count === 1 ? '' : 's'}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <div style={{ width: 14, height: Math.max(3, (d.count / maxBucket) * 36), background: '#2563eb', borderRadius: 3 }} />
+                <span style={{ fontSize: 9.5, color: '#9ca3af' }}>{d.label[0]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {weekViews.length === 0 && (
+          <p style={{ padding: '0 20px 18px', fontSize: 12, color: '#9ca3af', margin: 0 }}>No visits recorded yet — this fills in as people browse the site.</p>
+        )}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: 20 }} className="dash-grid">
@@ -199,6 +266,7 @@ export default async function DashboardPage() {
         .dash-row:hover { background: #f8f9fa; }
         .dash-action:hover { background: #f0f1f3 !important; }
         @media (max-width: 880px) { .dash-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 640px) { .visitor-grid { grid-template-columns: 1fr 1fr !important; } }
       `}</style>
     </div>
   );
