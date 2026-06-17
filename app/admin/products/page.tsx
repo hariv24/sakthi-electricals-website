@@ -11,18 +11,6 @@ type DBNode = {
 
 const PLACEHOLDER = '/placeholder-product.svg';
 
-async function getBreadcrumb(sb: Awaited<ReturnType<typeof createSupabaseServerClient>>, leafId: string) {
-  const crumbs: { id: string; name: string }[] = [];
-  let id: string | null = leafId;
-  while (id) {
-    const { data } = await sb.from('catalog_nodes').select('id, name, parent_id').eq('id', id).single() as { data: { id: string; name: string; parent_id: string | null } | null };
-    if (!data) break;
-    crumbs.unshift({ id: data.id, name: data.name });
-    id = data.parent_id;
-  }
-  return crumbs;
-}
-
 export default async function ProductsAdminPage({
   searchParams,
 }: {
@@ -31,19 +19,30 @@ export default async function ProductsAdminPage({
   const { parent } = await searchParams;
   const sb = await createSupabaseServerClient();
 
-  // Fetch current node (if drilling into a folder)
-  let currentNode: DBNode | null = null;
-  if (parent) {
-    const { data } = await sb.from('catalog_nodes').select('*').eq('id', parent).single();
-    currentNode = data;
-  }
+  // One query for the whole tree — breadcrumb, current node, children and the
+  // total count are all derived from this in memory instead of separate round trips.
+  const { data: allNodes } = await sb
+    .from('catalog_nodes')
+    .select('id, parent_id, name, slug, is_leaf, order_index, cover_image_url')
+    .order('order_index');
+  const nodes = (allNodes ?? []) as DBNode[];
+  const byId = new Map(nodes.map(n => [n.id, n]));
 
-  // Fetch children at this level
-  const query = parent
-    ? sb.from('catalog_nodes').select('*').eq('parent_id', parent).order('order_index')
-    : sb.from('catalog_nodes').select('*').is('parent_id', null).order('order_index');
-  const { data: nodes } = await query;
-  const rawChildren = (nodes ?? []) as DBNode[];
+  const currentNode = parent ? byId.get(parent) ?? null : null;
+
+  const rawChildren = nodes
+    .filter(n => (parent ? n.parent_id === parent : n.parent_id === null))
+    .sort((a, b) => a.order_index - b.order_index);
+
+  // Breadcrumb: walk up the parent chain in memory (no extra DB calls per level)
+  const crumbs: { id: string; name: string }[] = [];
+  let walkId: string | null = parent ?? null;
+  while (walkId) {
+    const n = byId.get(walkId);
+    if (!n) break;
+    crumbs.unshift({ id: n.id, name: n.name });
+    walkId = n.parent_id;
+  }
 
   // For leaf nodes with no cover image, fall back to their first uploaded image
   const missingCoverIds = rawChildren.filter(n => n.is_leaf && !n.cover_image_url).map(n => n.id);
@@ -59,11 +58,7 @@ export default async function ProductsAdminPage({
     cover_image_url: n.cover_image_url ?? fallbackMap.get(n.id) ?? null,
   }));
 
-  // Breadcrumb (only when inside a folder)
-  const crumbs = parent ? await getBreadcrumb(sb, parent) : [];
-
-  // Total count for empty state
-  const { count: totalCount } = await sb.from('catalog_nodes').select('id', { count: 'exact', head: true });
+  const totalCount = nodes.length;
 
   return (
     <div>
@@ -114,7 +109,7 @@ export default async function ProductsAdminPage({
       </div>
 
       {/* ── Empty state ─────────────────────────────────────────── */}
-      {children.length === 0 && (totalCount ?? 0) === 0 && (
+      {children.length === 0 && totalCount === 0 && (
         <div style={{ background: '#fff', border: '1px solid #e2e5ea', borderRadius: 16, padding: 64, textAlign: 'center' }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>📦</div>
           <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1a1a2e', marginBottom: 8 }}>No products yet</h2>
@@ -122,7 +117,7 @@ export default async function ProductsAdminPage({
         </div>
       )}
 
-      {children.length === 0 && (totalCount ?? 0) > 0 && (
+      {children.length === 0 && totalCount > 0 && (
         <div style={{ background: '#fff', border: '1px solid #e2e5ea', borderRadius: 16, padding: 48, textAlign: 'center' }}>
           <p style={{ fontSize: 14, color: '#6b7280' }}>This folder is empty. Add a subfolder or product above.</p>
         </div>
