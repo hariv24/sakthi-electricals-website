@@ -57,8 +57,9 @@ async function run() {
   const nodes = (allNodes ?? []) as DBNode[];
   const byId = new Map(nodes.map(n => [n.id, n]));
   const leaves = nodes.filter(n => n.is_leaf);
+  const folders = nodes.filter(n => !n.is_leaf);
 
-  console.log(`Found ${leaves.length} leaf products. Checking which need content…\n`);
+  console.log(`Found ${leaves.length} leaf products and ${folders.length} folders. Checking which need content…\n`);
 
   function slugPathFor(node: DBNode): string[] {
     const path: string[] = [];
@@ -114,7 +115,29 @@ async function run() {
     else skipped++;
   }
 
-  console.log(`\nDone. Specs added: ${specsAdded}, overviews added: ${overviewAdded}, applications added: ${appsAdded}. Fully skipped (already had all content): ${skipped}.`);
+  console.log(`\nProducts done. Specs added: ${specsAdded}, overviews added: ${overviewAdded}, applications added: ${appsAdded}. Fully skipped: ${skipped}.`);
+
+  console.log(`\nChecking ${folders.length} folders for missing applications…\n`);
+  let folderAppsAdded = 0, folderSkipped = 0;
+  for (const folder of folders) {
+    const slugPath = slugPathFor(folder);
+    const contentNode = { display: folder.name, slugPath };
+
+    const { count: appsCount } = await sb
+      .from('product_applications').select('id', { count: 'exact', head: true }).eq('node_id', folder.id);
+    if (!appsCount) {
+      const rows = getApplicationsDefault(contentNode).map((a, i) => ({
+        node_id: folder.id, title: a.title, body: a.body, icon_name: a.icon_name, order_index: i,
+      }));
+      const { error: insErr } = await sb.from('product_applications').insert(rows);
+      if (insErr) console.error(`  ✗ applications failed for folder "${folder.name}":`, insErr.message);
+      else { folderAppsAdded++; console.log(`✓ ${folder.name}`); }
+    } else {
+      folderSkipped++;
+    }
+  }
+
+  console.log(`\nFolders done. Applications added: ${folderAppsAdded}. Skipped (already had content): ${folderSkipped}.`);
 }
 
 run().catch(err => {

@@ -77,6 +77,51 @@ function IconPicker({ selected, onSelect }: { selected: string; onSelect: (n: st
   );
 }
 
+function ApplicationsEditor({ apps, setApps, caption }: {
+  apps: AppRow[];
+  setApps: (fn: (a: AppRow[]) => AppRow[]) => void;
+  caption: string;
+}) {
+  return (
+    <div style={{ background: '#fff', border: '1.5px solid #e2e5ea', borderRadius: 12, marginBottom: 20 }}>
+      <div style={{ padding: '14px 20px', background: '#f8f9fa', borderBottom: '1px solid #e2e5ea' }}>
+        <SectionHeader title="Applications (up to 4)" />
+        <p style={{ fontSize: 12, color: '#9ca3af', margin: 0, marginTop: 2 }}>{caption}</p>
+      </div>
+      <div style={{ padding: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+          {apps.map((app, i) => (
+            <div key={i} style={{ background: '#f8f9fa', border: '1.5px solid #e2e5ea', borderRadius: 10, padding: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <IconPicker selected={app.icon_name} onSelect={n => setApps(a => a.map((x, j) => j === i ? { ...x, icon_name: n } : x))} />
+                  <span style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase' }}>Application {i + 1}</span>
+                </div>
+                <button type="button" onClick={() => setApps(a => a.filter((_, j) => j !== i))}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', display: 'flex' }}>
+                  <Trash2 size={13} />
+                </button>
+              </div>
+              <input value={app.title} onChange={e => setApps(a => a.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
+                placeholder="Title (e.g. HT Substations)"
+                style={{ width: '100%', padding: '8px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 13, marginBottom: 8, boxSizing: 'border-box' }} />
+              <textarea value={app.body} onChange={e => setApps(a => a.map((x, j) => j === i ? { ...x, body: e.target.value } : x))}
+                placeholder="Description of this application…" rows={3}
+                style={{ width: '100%', padding: '8px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 13, resize: 'vertical', boxSizing: 'border-box', lineHeight: 1.55 }} />
+            </div>
+          ))}
+        </div>
+        {apps.length < 4 && (
+          <button type="button" onClick={() => setApps(a => [...a, { icon_name: 'Zap', title: '', body: '' }])}
+            style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #e2e5ea', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
+            <Plus size={13} /> Add application
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ── Main component ─────────────────────────────────────────────────────────── */
 
 export default function ProductEditor({ node, images, specs, overview, applications, video }: {
@@ -173,9 +218,9 @@ export default function ProductEditor({ node, images, specs, overview, applicati
         saveSpecs(node.id, specRows.filter(r => r.label && r.value)),
         saveVideo(node.id, videoUrl),
         saveOverview(node.id, { heading: ov.heading, paragraph_1: ov.paragraph_1, paragraph_2: '' }),
-        saveApplications(node.id, apps.filter(a => a.title && a.body)),
       );
     }
+    jobs.push(saveApplications(node.id, apps.filter(a => a.title && a.body)));
     await Promise.all(jobs);
     setSaving(false);
     setSaved(true);
@@ -334,50 +379,18 @@ export default function ProductEditor({ node, images, specs, overview, applicati
             </div>
           </div>
 
-          {/* ── Applications ──────────────────────────────────────────── */}
-          <div style={{ background: '#fff', border: '1.5px solid #e2e5ea', borderRadius: 12, marginBottom: 20 }}>
-            <div style={{ padding: '14px 20px', background: '#f8f9fa', borderBottom: '1px solid #e2e5ea' }}>
-              <SectionHeader title="Applications (up to 4)" />
-              <p style={{ fontSize: 12, color: '#9ca3af', margin: 0, marginTop: 2 }}>These show as cards on the product page. Click the icon to change it.</p>
-            </div>
-            <div style={{ padding: 20 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-                {apps.map((app, i) => (
-                  <div key={i} style={{ background: '#f8f9fa', border: '1.5px solid #e2e5ea', borderRadius: 10, padding: 14 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <IconPicker selected={app.icon_name} onSelect={n => setApps(a => a.map((x, j) => j === i ? { ...x, icon_name: n } : x))} />
-                        <span style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase' }}>Application {i + 1}</span>
-                      </div>
-                      <button type="button" onClick={() => setApps(a => a.filter((_, j) => j !== i))}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', display: 'flex' }}>
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                    <input value={app.title} onChange={e => setApps(a => a.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
-                      placeholder="Title (e.g. HT Substations)"
-                      style={{ width: '100%', padding: '8px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 13, marginBottom: 8, boxSizing: 'border-box' }} />
-                    <textarea value={app.body} onChange={e => setApps(a => a.map((x, j) => j === i ? { ...x, body: e.target.value } : x))}
-                      placeholder="Description of this application…" rows={3}
-                      style={{ width: '100%', padding: '8px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 13, resize: 'vertical', boxSizing: 'border-box', lineHeight: 1.55 }} />
-                  </div>
-                ))}
-              </div>
-              {apps.length < 4 && (
-                <button type="button" onClick={() => setApps(a => [...a, { icon_name: 'Zap', title: '', body: '' }])}
-                  style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', background: '#f3f4f6', border: '1px solid #e2e5ea', borderRadius: 8, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
-                  <Plus size={13} /> Add application
-                </button>
-              )}
-            </div>
-          </div>
+          <ApplicationsEditor apps={apps} setApps={setApps} caption="These show as cards on the product page. Click the icon to change it." />
         </>
       )}
 
       {!node.is_leaf && (
-        <div style={{ background: '#fff', border: '1.5px solid #e2e5ea', borderRadius: 12, padding: 20, marginBottom: 20 }}>
-          <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>This is a folder, not a product. The name above is the only thing to edit. Products inside this folder can be edited individually.</p>
-        </div>
+        <>
+          <div style={{ background: '#fff', border: '1.5px solid #e2e5ea', borderRadius: 12, padding: 20, marginBottom: 20 }}>
+            <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>This is a folder, not a product — it has no photos, specs, or overview text of its own. Products inside it are edited individually. The applications below appear on this folder&apos;s own category page.</p>
+          </div>
+
+          <ApplicationsEditor apps={apps} setApps={setApps} caption="These show as cards on this category's page. Click the icon to change it." />
+        </>
       )}
 
       {/* ── Single save button ────────────────────────────────────────── */}

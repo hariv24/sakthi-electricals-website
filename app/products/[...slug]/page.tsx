@@ -399,16 +399,19 @@ function LeafProductPage({
 /* ── Folder (category) page ─────────────────────────────────────────────────── */
 
 function FolderPageContent({
-  node, crumbs, slug, separatorStyle, unlimited,
+  node, crumbs, slug, separatorStyle, unlimited, dbApps,
 }: {
   node: CatalogNode;
   crumbs: { display: string; href: string }[];
   slug: string[];
   separatorStyle: CSSProperties;
   unlimited: boolean;
+  dbApps?: { title: string; body: string; icon_name?: string }[];
 }) {
   const depthLabel = slug.length === 1 ? 'Product Family' : slug.length === 2 ? 'Category' : 'Sub-category';
-  const apps = getApplications(node, slug);
+  const apps: AppItem[] = dbApps && dbApps.length > 0
+    ? dbApps.map(a => ({ icon: APP_ICON_MAP[a.icon_name ?? 'Zap'] ?? <Zap size={26} strokeWidth={1.5}/>, title: a.title, body: a.body }))
+    : getApplications(node, slug);
 
   return (
     <>
@@ -521,10 +524,14 @@ export default async function FolderPage({ params }: { params: Promise<{ slug: s
     makeNode(k, [...slug, k.slug], Array.from({ length: gcCount.get(k.id) ?? 0 }) as CatalogNode[])
   );
 
+  const { data: folderApps } = await sb
+    .from('product_applications').select('title,body,icon_name').eq('node_id', dbNode.id).order('order_index');
+
   return (
     <FolderPageContent
       node={makeNode(dbNode, slug, childNodes)}
       crumbs={crumbs} slug={slug} separatorStyle={separatorStyle} unlimited={unlimited}
+      dbApps={folderApps ?? undefined}
     />
   );
 }
