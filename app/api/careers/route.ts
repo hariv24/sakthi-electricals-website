@@ -19,13 +19,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
+  if (file && file.size > 0) {
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    if (!isPdf) {
+      return NextResponse.json({ error: 'Resumes must be a PDF file.' }, { status: 400 });
+    }
+  }
+
   const admin = await createSupabaseAdminClient();
 
   // Upload resume if provided
   let resumeUrl: string | null = null;
   if (file && file.size > 0) {
-    const ext  = file.name.split('.').pop() ?? 'pdf';
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.pdf`;
     const buffer = Buffer.from(await file.arrayBuffer());
     const { error: uploadError } = await admin.storage
       .from('resumes')

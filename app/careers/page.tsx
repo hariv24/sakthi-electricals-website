@@ -57,7 +57,7 @@ function Field({
 
 export default function CareersPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { ref: formRef, inView: formInView } = useInView({ threshold: 0.05 });
   const { ref: whyRef, inView: whyInView } = useInView({ threshold: 0.1 });
@@ -68,7 +68,7 @@ export default function CareersPage() {
     if (!form.checkValidity()) { form.reportValidity(); return; }
 
     setLoading(true);
-    setError(false);
+    setError(null);
 
     const data = new FormData(form);
 
@@ -77,11 +77,14 @@ export default function CareersPage() {
         method: "POST",
         body: data,
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error || `HTTP ${res.status}`);
+      }
       setSubmitted(true);
       form.reset();
-    } catch {
-      setError(true);
+    } catch (err) {
+      setError(err instanceof Error && err.message.includes("PDF") ? err.message : "generic");
     } finally {
       setLoading(false);
     }
@@ -156,8 +159,13 @@ export default function CareersPage() {
 
                 {error && (
                   <div style={{ display: "flex", alignItems: "center", gap: 10, background: "rgba(216,24,24,.06)", border: "1px solid rgba(216,24,24,.25)", color: "var(--se-red)", borderRadius: "var(--r-md)", padding: 20, fontSize: "14.5px", marginBottom: 20 }}>
-                    <Send size={18} style={{ flex: "none" }} /> Something went wrong — please try again or email us at{" "}
-                    <a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--se-red)", fontWeight: 600 }}>sakthi.electricals@yahoo.com</a>
+                    <Send size={18} style={{ flex: "none" }} />
+                    {error === "generic" ? (
+                      <>
+                        Something went wrong — please try again or email us at{" "}
+                        <a href="mailto:sakthi.electricals@yahoo.com" style={{ color: "var(--se-red)", fontWeight: 600 }}>sakthi.electricals@yahoo.com</a>
+                      </>
+                    ) : error}
                   </div>
                 )}
 
@@ -206,8 +214,8 @@ export default function CareersPage() {
                     <textarea name="message" required placeholder="Briefly describe your background and what you're looking for…" style={{ minHeight: 110 }} />
                   </Field>
 
-                  <Field label="Resume / CV" hint="Optional — PDF, DOC, or DOCX. Max 5 MB." delay={formInView ? 530 : 0}>
-                    <input type="file" name="resume" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style={{ padding: "9px 12px", cursor: "pointer" }} />
+                  <Field label="Resume / CV" hint="Optional — PDF only." delay={formInView ? 530 : 0}>
+                    <input type="file" name="resume" accept=".pdf,application/pdf" style={{ padding: "9px 12px", cursor: "pointer" }} />
                   </Field>
 
                   <div style={formInView ? { animation: `slideUp 220ms var(--ease-out) 560ms both` } : {}}>
