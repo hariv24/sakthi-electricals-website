@@ -150,10 +150,15 @@ export default async function DashboardPage() {
 
       {/* ── Visitors ────────────────────────────────────────────────── */}
       <div style={{ background: '#fff', border: '1px solid #e2e5ea', borderRadius: 16, overflow: 'hidden', marginBottom: 20 }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e5ea', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Eye size={15} color="#6b7280" />
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e' }}>Website visitors</span>
-          <span style={{ fontSize: 11.5, color: '#9ca3af' }}>· last 7 days</span>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid #e2e5ea', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Eye size={15} color="#6b7280" />
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e' }}>Website visitors</span>
+            <span style={{ fontSize: 11.5, color: '#9ca3af' }}>· last 7 days</span>
+          </div>
+          <Link href="/admin/analytics" style={{ fontSize: 12.5, fontWeight: 600, color: '#2563eb', textDecoration: 'none' }}>
+            View full analytics →
+          </Link>
         </div>
         <div style={{ padding: 20, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 24, alignItems: 'center' }} className="visitor-grid">
           <div>

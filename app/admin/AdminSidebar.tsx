@@ -2,13 +2,14 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import { LayoutDashboard, Newspaper, Package, Users, LogOut } from 'lucide-react';
+import { LayoutDashboard, Newspaper, Package, Users, BarChart3, LogOut } from 'lucide-react';
 
 const NAV = [
-  { href: '/admin/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
-  { href: '/admin/news',      label: 'News',        icon: Newspaper },
-  { href: '/admin/products',  label: 'Products',    icon: Package },
-  { href: '/admin/careers',   label: 'Careers',     icon: Users },
+  { href: '/admin/dashboard',  label: 'Dashboard',  icon: LayoutDashboard },
+  { href: '/admin/analytics',  label: 'Analytics',  icon: BarChart3 },
+  { href: '/admin/news',       label: 'News',        icon: Newspaper },
+  { href: '/admin/products',   label: 'Products',    icon: Package },
+  { href: '/admin/careers',    label: 'Careers',     icon: Users },
 ];
 
 export default function AdminSidebar() {
