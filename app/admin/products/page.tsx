@@ -124,7 +124,9 @@ export default async function ProductsAdminPage({
       )}
 
       {/* ── Cards grid ──────────────────────────────────────────── */}
-      {children.length > 0 && <SortableGrid nodes={children} />}
+      {/* key forces a fresh mount per folder — otherwise SortableGrid's internal
+          drag state would keep showing the previous folder's items after navigating */}
+      {children.length > 0 && <SortableGrid key={parent ?? 'root'} nodes={children} />}
     </div>
   );
 }
