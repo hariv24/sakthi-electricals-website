@@ -7,7 +7,12 @@ export const metadata: Metadata = {
   title: "Sakthi Electricals — Instrument Transformer People",
   description:
     "ISO 9001 certified manufacturer of instrument transformers up to 33 kV, control transformers, vibratory feeders and EB HT & LT service panels. Engineered and tested to IS & IEC standards.",
-  icons: { icon: "/assets/logo.png" },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/assets/logo.png", type: "image/png" },
+    ],
+  },
   verification: { google: "T6fUyAPXiXJiDlEbzVLzx7Lw18Sok9-K-i-Ko3y1M9A" },
   openGraph: {
     type: "website",
