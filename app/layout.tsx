@@ -9,11 +9,12 @@ export const metadata: Metadata = {
     "ISO 9001 certified manufacturer of instrument transformers up to 33 kV, control transformers, vibratory feeders and EB HT & LT service panels. Engineered and tested to IS & IEC standards.",
   icons: {
     icon: [
+      { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-192.png", type: "image/png", sizes: "192x192" },
       { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/logo-bg.jpg", type: "image/jpeg", sizes: "any" },
     ],
-    apple: "/logo-bg.jpg",
-    shortcut: "/logo-bg.jpg",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: "/favicon-32.png",
   },
   verification: { google: "T6fUyAPXiXJiDlEbzVLzx7Lw18Sok9-K-i-Ko3y1M9A" },
   openGraph: {
