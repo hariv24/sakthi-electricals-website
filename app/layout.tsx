@@ -10,8 +10,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/assets/logo.png", type: "image/png" },
+      { url: "/logo-bg.jpg", type: "image/jpeg", sizes: "any" },
     ],
+    apple: "/logo-bg.jpg",
+    shortcut: "/logo-bg.jpg",
   },
   verification: { google: "T6fUyAPXiXJiDlEbzVLzx7Lw18Sok9-K-i-Ko3y1M9A" },
   openGraph: {
@@ -21,7 +23,10 @@ export const metadata: Metadata = {
     title: "Sakthi Electricals — Instrument Transformer People",
     description:
       "ISO 9001 certified manufacturer of instrument transformers up to 33 kV, control transformers, vibratory feeders and EB HT & LT service panels. Engineered and tested to IS & IEC standards.",
-    images: [{ url: "https://www.sakthielectricals.com/assets/hero-poster.jpg", width: 1200, height: 630 }],
+    images: [
+      { url: "https://www.sakthielectricals.com/logo-bg.jpg", width: 512, height: 512 },
+      { url: "https://www.sakthielectricals.com/assets/hero-poster.jpg", width: 1200, height: 630 },
+    ],
   },
 };
 
@@ -33,8 +38,8 @@ const schemaOrg = {
   description:
     "ISO 9001 certified manufacturer of instrument transformers up to 33 kV, control transformers, vibratory feeders and EB HT & LT service panels.",
   url: "https://www.sakthielectricals.com",
-  logo: "https://www.sakthielectricals.com/assets/logo.png",
-  image: "https://www.sakthielectricals.com/assets/hero-poster.jpg",
+  logo: "https://www.sakthielectricals.com/logo-bg.jpg",
+  image: "https://www.sakthielectricals.com/logo-bg.jpg",
   telephone: ["+91-97152-11788", "+91-73977-26150"],
   email: "sales@sakthielectrical.com",
   address: {
