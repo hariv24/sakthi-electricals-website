@@ -6,8 +6,6 @@ import { MapPin, Phone, Mail, ShieldCheck, Send, CheckCircle2 } from "lucide-rea
 import { categories, byCat } from "@/lib/data";
 import { useInView } from "@/lib/useInView";
 
-const WEBHOOK = "https://n8n-production-b18ce.up.railway.app/webhook/website-enquiry";
-
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
@@ -34,7 +32,7 @@ export default function ContactPage() {
     };
 
     try {
-      const res = await fetch(WEBHOOK, {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
