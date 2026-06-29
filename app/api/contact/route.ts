@@ -28,6 +28,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to save enquiry.' }, { status: 500 });
   }
 
+  // Fire n8n webhook (best-effort — don't fail the request if it's down)
+  try {
+    await fetch('https://n8n.thinkgalactic.in/webhook/website-enquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, company, email, phone, product, requirement, source: 'Website' }),
+    });
+  } catch (err) {
+    console.warn('[contact] n8n webhook failed:', err);
+  }
+
   // Send email via Resend
   const resendKey = process.env.RESEND_API_KEY;
   if (resendKey) {
