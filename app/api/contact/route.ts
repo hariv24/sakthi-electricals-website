@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   if (resendKey) {
     const resend = new Resend(resendKey);
     await resend.emails.send({
-      from: 'Sakthi Electricals Website <onboarding@resend.dev>',
+      from: 'Sakthi Electricals Website <website@sakthielectricals.com>',
       to: ['sales@sakthielectricals.com'],
       replyTo: email,
       subject: `New Enquiry from ${name}${company ? ` (${company})` : ''}`,
