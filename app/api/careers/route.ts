@@ -52,17 +52,6 @@ export async function POST(req: NextRequest) {
 
   if (error) console.error('[POST /api/careers] Supabase error:', error.message);
 
-  // Forward to n8n webhook (best-effort)
-  try {
-    await fetch('https://n8n.thinkgalactic.in/webhook/website-enquiry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, phone, role, experience, requirement, source: 'Careers' }),
-    });
-  } catch (e) {
-    console.error('[POST /api/careers] webhook forward failed:', e);
-  }
-
   // Send email notification
   const resendKey = process.env.RESEND_API_KEY;
   if (resendKey) {
