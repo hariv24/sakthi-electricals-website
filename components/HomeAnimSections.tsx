@@ -112,9 +112,6 @@ export function HomeStatsSection() {
 /* ---- Product families (catalog-driven, compact image cards) ---- */
 export function HomeProductsSection({ families }: { families: CatalogNode[] }) {
   const { ref, inView } = useInView({ threshold: 0.08 });
-  const displayed = families
-    .filter(f => f.slug !== 'customer-requirement-designs')
-    .slice(0, 6);
   return (
     <section className="band band-alt" ref={ref as React.Ref<HTMLElement>}>
       <div className="wrap-wide">
@@ -122,7 +119,7 @@ export function HomeProductsSection({ families }: { families: CatalogNode[] }) {
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <div style={inView ? { animation: "slideUp 240ms var(--ease-out) both" } : {}}>
             <div className="eyebrow eb">What we manufacture</div>
-            <h2 style={{ marginTop: 10, maxWidth: "22ch" }}>{displayed.length} product {displayed.length === 1 ? 'family' : 'families'}, one factory floor.</h2>
+            <h2 style={{ marginTop: 10, maxWidth: "22ch" }}>{families.length} product {families.length === 1 ? 'family' : 'families'}, one factory floor.</h2>
           </div>
           <Link href="/products" className="btn btn-secondary"
             style={{ flexShrink: 0, ...(inView ? { animation: "slideUp 240ms var(--ease-out) 60ms both" } : {}) }}>
@@ -131,7 +128,7 @@ export function HomeProductsSection({ families }: { families: CatalogNode[] }) {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10, marginTop: 28 }} className="prod-fam-grid">
-          {displayed.map((f, i) => {
+          {families.map((f, i) => {
             const delay = Math.floor(i / 4) * 55 + (i % 4) * 38 + 60;
             return (
               <Link key={f.slug} href={`/products/${f.slugPath.join('/')}`}

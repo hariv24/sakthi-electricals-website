@@ -327,7 +327,8 @@ function LeafProductPage({
 }) {
   const limit = unlimited ? undefined : MAX_PHOTOS;
   const fsImages = (limit ? node.images.slice(0, limit) : node.images).map(img => imgUrl(node.relPath, img));
-  const galleryImages = (dbImages && dbImages.length > 0 ? dbImages : fsImages.length > 0 ? fsImages : [PLACEHOLDER]);
+  const rawDbImages = dbImages && dbImages.length > 0 ? dbImages : null;
+  const galleryImages = (rawDbImages ? (limit ? rawDbImages.slice(0, limit) : rawDbImages) : fsImages.length > 0 ? fsImages : [PLACEHOLDER]);
   const specRows: [string, string][] = dbSpecs && dbSpecs.length > 0 ? dbSpecs : getSpecRows(node, slug);
   const apps: AppItem[] = dbApps && dbApps.length > 0
     ? dbApps.map(a => ({ icon: APP_ICON_MAP[a.icon_name ?? 'Zap'] ?? <Zap size={26} strokeWidth={1.5}/>, title: a.title, body: a.body }))
