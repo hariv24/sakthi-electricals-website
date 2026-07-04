@@ -83,11 +83,11 @@ export function HomeStatsSection() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)" }} className="stat-icons-grid">
           {stats.map((s, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, justifyContent: "center", padding: "8px 20px", borderLeft: i === 0 ? "none" : "1px solid rgba(255,255,255,.14)" }}>
-              <div style={{ width: 58, height: 58, borderRadius: "50%", flex: "none", background: "radial-gradient(circle at 50% 35%,rgba(255,196,0,.22),rgba(255,196,0,.05))", border: "1px solid rgba(255,196,0,.34)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--se-gold)" }}>
+              <div className="stat-icon" style={{ width: 58, height: 58, borderRadius: "50%", flex: "none", background: "radial-gradient(circle at 50% 35%,rgba(255,196,0,.22),rgba(255,196,0,.05))", border: "1px solid rgba(255,196,0,.34)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--se-gold)" }}>
                 {s.icon}
               </div>
               <div>
-                <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 28, lineHeight: 1, color: "#fff", letterSpacing: "-.015em" }}>
+                <div className="stat-num" style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 28, lineHeight: 1, color: "#fff", letterSpacing: "-.015em" }}>
                   <CountUp to={s.to} duration={1600} delay={i * 80} />
                   <span style={{ color: "var(--se-gold)", marginLeft: 1 }}>{s.suffix}</span>
                 </div>
@@ -104,7 +104,18 @@ export function HomeStatsSection() {
           <span className="cert">IEC <b>61869</b></span>
         </div>
       </div>
-      <style>{`@media(max-width:760px){.stat-icons-grid{grid-template-columns:1fr 1fr!important;gap:20px 0!important}.stat-icons-grid>div:nth-child(odd){border-left:none!important}}`}</style>
+      <style>{`
+        @media(max-width:760px){
+          .stat-icons-grid{grid-template-columns:1fr 1fr!important;gap:20px 0!important}
+          .stat-icons-grid>div:nth-child(odd){border-left:none!important}
+        }
+        @media(max-width:500px){
+          .stat-icons-grid>div{padding:8px 10px!important;gap:10px!important}
+          .stat-num{font-size:22px!important}
+          .stat-icon{width:44px!important;height:44px!important}
+          .stat-icon svg{width:24px!important;height:24px!important}
+        }
+      `}</style>
     </section>
   );
 }
