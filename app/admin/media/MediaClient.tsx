@@ -3,8 +3,10 @@
 import { useState, useRef } from "react";
 import {
   Upload, RotateCcw, Video, Check, Loader2, AlertCircle,
-  ImageIcon, X, RefreshCw,
+  ImageIcon, X, RefreshCw, Info,
 } from "lucide-react";
+import { MEDIA_ASPECTS } from "@/lib/mediaAspects";
+import ImageCropModal from "./ImageCropModal";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -145,12 +147,14 @@ function GalleryPicker({
   slotKey,
   slotLabel,
   isVideo,
+  aspect,
   onSelect,
   onClose,
 }: {
   slotKey: string;
   slotLabel: string;
   isVideo: boolean;
+  aspect: number;
   onSelect: (url: string) => void;
   onClose: () => void;
 }) {
@@ -158,6 +162,7 @@ function GalleryPicker({
   const [loadingGallery, setLoadingGallery] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadErr, setUploadErr] = useState('');
+  const [cropFile, setCropFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function loadGallery() {
@@ -207,6 +212,13 @@ function GalleryPicker({
           <button onClick={onClose} style={{ background: '#f3f4f6', border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#6b7280' }}><X size={16} /></button>
         </div>
 
+        {!isVideo && (
+          <div style={{ margin: '16px 24px 0', display: 'flex', gap: 9, alignItems: 'flex-start', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 10, padding: '11px 14px', fontSize: 12.5, color: '#1e40af', lineHeight: 1.55 }}>
+            <Info size={15} style={{ flexShrink: 0, marginTop: 1 }} />
+            <span><b>Note for whoever supplies the photos:</b> please use the highest-resolution image available (at least 2000px on the longer side), well-lit and in focus, with good contrast and natural colour. Low-res, dark, or washed-out photos get stretched to fill the banner and will look noticeably lower quality than the rest of the site — it&apos;s the fastest way to make an otherwise premium-looking site look cheap.</span>
+          </div>
+        )}
+
         {/* Upload button row */}
         <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0', display: 'flex', gap: 10, alignItems: 'center' }}>
           <input
@@ -214,7 +226,11 @@ function GalleryPicker({
             type="file"
             accept={isVideo ? 'video/mp4,video/*' : 'image/*'}
             style={{ display: 'none' }}
-            onChange={e => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.target.value = ''; }}
+            onChange={e => {
+              const f = e.target.files?.[0];
+              if (f) { isVideo ? handleUpload(f) : setCropFile(f); }
+              e.target.value = '';
+            }}
           />
           <button
             onClick={() => fileRef.current?.click()}
@@ -276,6 +292,15 @@ function GalleryPicker({
         </div>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+
+      {cropFile && (
+        <ImageCropModal
+          file={cropFile}
+          aspect={aspect}
+          onCancel={() => setCropFile(null)}
+          onConfirm={croppedFile => { setCropFile(null); handleUpload(croppedFile); }}
+        />
+      )}
     </div>
   );
 }
@@ -375,6 +400,7 @@ function SlotCard({
           slotKey={slot.key}
           slotLabel={def.label}
           isVideo={def.isVideo ?? false}
+          aspect={MEDIA_ASPECTS[slot.key] ?? 16 / 9}
           onSelect={handleSelect}
           onClose={() => setPickerOpen(false)}
         />
@@ -452,7 +478,7 @@ export default function MediaClient({ initialSlots }: { initialSlots: MediaSlot[
       </div>
 
       <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 12, padding: '13px 18px', fontSize: 13, color: '#92400e', lineHeight: 1.6, marginBottom: 24 }}>
-        <b>How it works:</b> Click <b>&quot;Change image&quot;</b> on any slot below. You can either upload a brand-new photo, or pick one you&apos;ve already uploaded from the gallery. Changes show on the live website within a few seconds.
+        <b>How it works:</b> Click <b>&quot;Change image&quot;</b> on any slot below. Upload a new photo and you&apos;ll get a framing screen to drag/zoom to exactly what will show on the site, or pick one you&apos;ve already uploaded from the gallery. Changes show on the live website within a few seconds.
       </div>
 
       {PAGE_SECTIONS.map(section => (
