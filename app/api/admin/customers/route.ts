@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 
 console.log('[admin/customers] route loaded');
@@ -44,5 +45,6 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await sb.from('customers').insert({ name, short, sector, logo_url: logoUrl, order_index: orderIndex }).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePath('/customers');
   return NextResponse.json(data);
 }
