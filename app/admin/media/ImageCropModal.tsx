@@ -38,7 +38,7 @@ export default function ImageCropModal({
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,.7)', padding: 20 }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,.7)', padding: 20 }} onClick={e => e.stopPropagation()}>
       <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 640, overflow: 'hidden', boxShadow: '0 24px 80px rgba(0,0,0,.3)' }}>
 
         <div style={{ padding: '18px 24px', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
