@@ -88,7 +88,7 @@ export default function NewsSection({ items }: { items: NewsItem[] }) {
             {/* Optional image */}
             {active.image_url && (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={active.image_url} alt="" style={{ width: '100%', maxHeight: 320, objectFit: 'cover', display: 'block', borderRadius: '16px 16px 0 0' }} />
+              <img src={active.image_url} alt="" style={{ width: '100%', maxHeight: 520, objectFit: 'contain', display: 'block', borderRadius: '16px 16px 0 0', background: '#f5f5f5' }} />
             )}
 
             {/* Article body */}
