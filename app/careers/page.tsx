@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { getSiteMedia } from "@/lib/siteMedia";
 import CareersContent from "./CareersContent";
 
