@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import Link from "next/link";
 import { CustomerLogoGrid, CustomerSectorSection, CustomerCTASection } from "@/components/CustomerAnimSections";
 import { getSiteMedia } from "@/lib/siteMedia";

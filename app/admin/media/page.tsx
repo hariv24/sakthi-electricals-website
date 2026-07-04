@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
 import { MEDIA_DEFAULTS } from '@/lib/siteMedia';
 import MediaClient from './MediaClient';
