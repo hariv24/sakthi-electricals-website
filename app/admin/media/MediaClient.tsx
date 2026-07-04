@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import {
   Upload, RotateCcw, Video, Check, Loader2, AlertCircle,
-  ImageIcon, X, RefreshCw, Info,
+  ImageIcon, X, RefreshCw, Info, Trash2,
 } from "lucide-react";
 import { MEDIA_ASPECTS } from "@/lib/mediaAspects";
 import ImageCropModal from "./ImageCropModal";
@@ -163,6 +163,7 @@ function GalleryPicker({
   const [uploading, setUploading] = useState(false);
   const [uploadErr, setUploadErr] = useState('');
   const [cropFile, setCropFile] = useState<File | null>(null);
+  const [deletingName, setDeletingName] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function loadGallery() {
@@ -197,6 +198,30 @@ function GalleryPicker({
       body: JSON.stringify({ key: slotKey, url }),
     });
     onSelect(url);
+  }
+
+  async function handleDelete(name: string) {
+    if (!confirm('Permanently delete this uploaded file? This cannot be undone.')) return;
+    setDeletingName(name);
+    const res = await fetch('/api/admin/media/gallery', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    if (res.status === 409 && data.error === 'in_use') {
+      const proceed = confirm(
+        `This image is currently used on the site (${data.usedBySlots.join(', ')}). Deleting it will leave that spot broken until you replace it. Delete anyway?`
+      );
+      if (!proceed) { setDeletingName(null); return; }
+      await fetch('/api/admin/media/gallery', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, force: true }),
+      });
+    }
+    setDeletingName(null);
+    setGallery(prev => (prev ?? []).filter(i => i.name !== name));
   }
 
   return (
@@ -264,13 +289,24 @@ function GalleryPicker({
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
               {(gallery ?? []).map(item => (
-                <button
+                <div
                   key={item.url}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => selectExisting(item.url)}
-                  style={{ border: '2px solid #e2e5ea', borderRadius: 12, overflow: 'hidden', cursor: 'pointer', background: '#f8f9fa', padding: 0, transition: 'border-color 150ms, transform 150ms', position: 'relative' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#1a1a2e'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.03)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#e2e5ea'; (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') selectExisting(item.url); }}
+                  style={{ border: '2px solid #e2e5ea', borderRadius: 12, overflow: 'hidden', cursor: 'pointer', background: '#f8f9fa', padding: 0, transition: 'border-color 150ms, transform 150ms', position: 'relative', opacity: deletingName === item.name ? 0.4 : 1 }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#1a1a2e'; (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.03)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#e2e5ea'; (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)'; }}
                 >
+                  <button
+                    onClick={e => { e.stopPropagation(); handleDelete(item.name); }}
+                    disabled={deletingName === item.name}
+                    title="Delete this upload"
+                    style={{ position: 'absolute', top: 6, right: 6, zIndex: 1, background: 'rgba(17,17,17,.7)', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex', color: '#fff' }}
+                  >
+                    {deletingName === item.name ? <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={13} />}
+                  </button>
                   {isVideo ? (
                     <div style={{ height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 6 }}>
                       <Video size={28} style={{ color: '#6b7280' }} />
@@ -285,7 +321,7 @@ function GalleryPicker({
                       {item.name.replace(/^\d+_/, '')}
                     </div>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           )}
