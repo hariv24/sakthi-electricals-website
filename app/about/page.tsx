@@ -7,20 +7,22 @@ import {
   AboutCPRISection,
   AboutCTASection,
 } from "@/components/AboutAnimSections";
+import { getSiteMedia } from "@/lib/siteMedia";
 
 export const metadata = {
   title: "About Us — Sakthi Electricals",
   description: "Sakthi Electricals — started in 2006 with a vision to establish a name in transformer manufacturing. ISO 9001 certified; products tested by CPRI, Bangalore.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const media = await getSiteMedia(['about_banner', 'cpri_image']);
   return (
     <>
       <main style={{ flex: 1 }}>
 
         {/* Hero — CSS inline animations, above the fold */}
         <section className="page-hero hero-photo">
-          <div className="hero-bg" style={{ backgroundImage: "url('/assets/banners/about.jpg')", backgroundPosition: "center 60%" }} />
+          <div className="hero-bg" style={{ backgroundImage: `url('${media.about_banner}')`, backgroundPosition: "center 60%" }} />
           <div className="wrap-wide">
             <div className="breadcrumb" style={{ animation: "fadeIn 300ms var(--ease-out) 100ms both" }}>
               <Link href="/">Home</Link><span className="sep">/</span><span className="cur">About Us</span>
@@ -37,7 +39,7 @@ export default function AboutPage() {
         <AboutStatsStrip />
         <AboutValuesSection />
         <AboutTimelineSection />
-        <AboutCPRISection />
+        <AboutCPRISection cpriImage={media.cpri_image} />
         <AboutCTASection />
 
       </main>

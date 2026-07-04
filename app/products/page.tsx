@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FileText, ChevronRight } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getSiteMedia } from '@/lib/siteMedia';
 
 type DBFamily = {
   id: string;
@@ -62,7 +63,7 @@ function FamilyCard({ family }: { family: DBFamily }) {
 }
 
 export default async function ProductsPage() {
-  const sb = await createSupabaseServerClient();
+  const [sb, media] = await Promise.all([createSupabaseServerClient(), getSiteMedia(['products_banner'])]);
 
   const { data: rootNodes } = await sb
     .from('catalog_nodes').select('id,name,slug,cover_image_url')
@@ -94,7 +95,7 @@ export default async function ProductsPage() {
         <section className="page-hero hero-photo">
           <div
             className="hero-bg"
-            style={{ backgroundImage: "url('/assets/banners/products.jpg')", backgroundPosition: 'center 42%' }}
+            style={{ backgroundImage: `url('${media.products_banner}')`, backgroundPosition: 'center 42%' }}
           />
           <div className="wrap-wide">
             <div className="breadcrumb" style={{ animation: 'fadeIn 300ms var(--ease-out) 100ms both' }}>

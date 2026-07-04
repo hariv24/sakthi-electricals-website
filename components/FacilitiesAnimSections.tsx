@@ -6,7 +6,7 @@ import { Award, FileText, ArrowRight } from "lucide-react";
 import { useInView } from "@/lib/useInView";
 
 /* ── Section 1: Manufacturing floor — contained image ── */
-export function FacilitiesFloorSection() {
+export function FacilitiesFloorSection({ floorImg = '/assets/solution2.png' }: { floorImg?: string }) {
   const { ref, inView } = useInView({ threshold: 0.08 });
   return (
     <section className="band" ref={ref as React.Ref<HTMLElement>}>
@@ -20,7 +20,7 @@ export function FacilitiesFloorSection() {
             ...(inView ? { animation: "scaleSettle 280ms var(--ease-out) both" } : {}),
           }}>
             <Image
-              src="/assets/solution2.png"
+              src={floorImg}
               alt="Sakthi Electricals manufacturing floor"
               fill
               style={{ objectFit: "cover", objectPosition: "center 30%" }}
@@ -108,12 +108,12 @@ export function FacilitiesProcessSection() {
 }
 
 /* ── Section 3: Manufacturing Solutions + R&D — two editorial panels ── */
-export function FacilitiesSolutionsSection() {
+export function FacilitiesSolutionsSection({ sol1Img = '/assets/solution.jpg', sol2Img = '/assets/solution3.png' }: { sol1Img?: string; sol2Img?: string }) {
   const { ref, inView } = useInView({ threshold: 0.08 });
 
   const panels = [
     {
-      img: "/assets/solution.jpg",
+      img: sol1Img,
       alt: "Engineering team reviewing transformer design drawings",
       eyebrow: "Manufacturing Solutions",
       heading: "Built to your specification, not ours.",
@@ -127,7 +127,7 @@ export function FacilitiesSolutionsSection() {
       delay: 0,
     },
     {
-      img: "/assets/solution3.png",
+      img: sol2Img,
       alt: "Engineer inspecting transformer at in-house test bay",
       eyebrow: "Research & Development",
       heading: "32 years of engineering, applied to every unit.",

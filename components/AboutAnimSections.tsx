@@ -167,7 +167,7 @@ export function AboutTimelineSection() {
 }
 
 /* ---- CPRI section ---- */
-export function AboutCPRISection() {
+export function AboutCPRISection({ cpriImage = '/assets/banners/stats-coil.jpg' }: { cpriImage?: string }) {
   const { ref, inView } = useInView({ threshold: 0.12, rootMargin: "0px" });
   return (
     <section className="band" ref={ref as React.Ref<HTMLElement>}>
@@ -189,7 +189,7 @@ export function AboutCPRISection() {
             borderRadius: "var(--r-lg)", overflow: "hidden", border: "1px solid var(--border)", aspectRatio: "16/11", position: "relative",
             ...(inView ? { animation: "scaleSettle 220ms var(--ease-out) 100ms both" } : {}),
           }}>
-            <Image src="/assets/banners/stats-coil.jpg" alt="Copper-wound transformer coils" fill style={{ objectFit: "cover" }} />
+            <Image src={cpriImage} alt="Copper-wound transformer coils" fill style={{ objectFit: "cover" }} />
           </div>
         </div>
       </div>

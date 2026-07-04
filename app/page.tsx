@@ -12,9 +12,14 @@ import {
 import NewsSection from "@/components/NewsSection";
 import { getCatalogTreeFromDB } from "@/lib/catalog";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSiteMedia } from "@/lib/siteMedia";
 
 export default async function HomePage() {
-  const [tree, sb] = await Promise.all([getCatalogTreeFromDB(), createSupabaseServerClient()]);
+  const [tree, sb, media] = await Promise.all([
+    getCatalogTreeFromDB(),
+    createSupabaseServerClient(),
+    getSiteMedia(['hero_video', 'hero_poster', 'about_home', 'stats_coil']),
+  ]);
   const { data: news } = await sb
     .from("news_items")
     .select("*")
@@ -24,9 +29,9 @@ export default async function HomePage() {
   return (
     <>
       <main style={{ flex: 1 }}>
-        <HeroSection />
-        <HomeAboutSection />
-        <HomeStatsSection />
+        <HeroSection videoUrl={media.hero_video} posterUrl={media.hero_poster} />
+        <HomeAboutSection aboutHomeImg={media.about_home} />
+        <HomeStatsSection statsCoilImg={media.stats_coil} />
         <HomeProductsSection families={tree.children} />
         <HomeCapabilitiesSection />
         {news && news.length > 0 && <NewsSection items={news} />}
@@ -37,12 +42,12 @@ export default async function HomePage() {
   );
 }
 
-function HeroSection() {
+function HeroSection({ videoUrl, posterUrl }: { videoUrl: string; posterUrl: string }) {
   return (
     <section style={{ position: "relative", minHeight: "88vh", display: "flex", alignItems: "flex-end", overflow: "hidden", background: "var(--se-navy-900)" }}>
-      <video autoPlay muted loop playsInline poster="/assets/hero-poster.jpg"
+      <video autoPlay muted loop playsInline poster={posterUrl}
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}>
-        <source src="/assets/hero.mp4" type="video/mp4" />
+        <source src={videoUrl} type="video/mp4" />
       </video>
       <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(90deg,rgba(10,7,22,.86) 0%,rgba(10,7,22,.55) 42%,rgba(10,7,22,.12) 72%,rgba(10,7,22,0) 100%),linear-gradient(0deg,rgba(10,7,22,.82) 0%,rgba(10,7,22,.15) 38%,rgba(10,7,22,0) 60%)" }} />
       <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", opacity: .5, backgroundImage: "linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)", backgroundSize: "56px 56px", WebkitMaskImage: "radial-gradient(120% 90% at 18% 90%,#000 0%,transparent 75%)", maskImage: "radial-gradient(120% 90% at 18% 90%,#000 0%,transparent 75%)" }} />

@@ -22,7 +22,7 @@ function toTitleCase(str: string) {
 }
 
 /* ---- About ---- */
-export function HomeAboutSection() {
+export function HomeAboutSection({ aboutHomeImg = '/assets/banners/about-home.jpg' }: { aboutHomeImg?: string }) {
   const { ref, inView } = useInView({ threshold: 0.12, rootMargin: "0px" });
   return (
     <section className="band" ref={ref as React.Ref<HTMLElement>}>
@@ -54,7 +54,7 @@ export function HomeAboutSection() {
           </div>
           <div style={{ position: "relative", ...(inView ? { animation: "slideInRight 260ms var(--ease-out) 80ms both" } : {}) }}>
             <div style={{ borderRadius: "var(--r-lg)", overflow: "hidden", border: "1px solid var(--border)", boxShadow: "var(--shadow-lg)", aspectRatio: "4/5", position: "relative", background: "var(--steel-100)" }}>
-              <Image src="/assets/banners/about-home.jpg" alt="High-voltage instrument transformers at a substation" fill style={{ objectFit: "cover" }} />
+              <Image src={aboutHomeImg} alt="High-voltage instrument transformers at a substation" fill style={{ objectFit: "cover" }} />
             </div>
             <div style={{ position: "absolute", left: -20, bottom: -20, background: "var(--se-red)", color: "#fff", borderRadius: "var(--r-lg)", padding: "16px 20px", boxShadow: "var(--shadow-lg)" }}>
               <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 40, lineHeight: .95, letterSpacing: "-.02em" }}>32<span style={{ opacity: .85 }}>+</span></div>
@@ -69,7 +69,7 @@ export function HomeAboutSection() {
 }
 
 /* ---- Stats — counting numbers ---- */
-export function HomeStatsSection() {
+export function HomeStatsSection({ statsCoilImg = '/assets/banners/stats-coil.jpg' }: { statsCoilImg?: string }) {
   const stats = [
     { icon: <Clock size={32} strokeWidth={1.75} />, to: 32, suffix: "+", k: "Years of experience" },
     { icon: <Users size={32} strokeWidth={1.75} />, to: 50000, suffix: "+", k: "Satisfied customers" },
@@ -78,7 +78,7 @@ export function HomeStatsSection() {
   ];
   return (
     <section className="band band-ink" style={{ padding: "40px 0", overflow: "hidden", borderTop: "2px solid var(--se-gold)", borderBottom: "2px solid var(--se-gold)", position: "relative" }}>
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, backgroundImage: "linear-gradient(180deg,rgba(15,10,33,.93) 0%,rgba(17,11,38,.88) 55%,rgba(15,10,33,.95) 100%),url('/assets/banners/stats-coil.jpg')", backgroundSize: "cover", backgroundPosition: "center" }} />
+      <div style={{ position: "absolute", inset: 0, zIndex: 0, backgroundImage: `linear-gradient(180deg,rgba(15,10,33,.93) 0%,rgba(17,11,38,.88) 55%,rgba(15,10,33,.95) 100%),url('${statsCoilImg}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
       <div className="wrap-wide" style={{ position: "relative", zIndex: 1 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)" }} className="stat-icons-grid">
           {stats.map((s, i) => (

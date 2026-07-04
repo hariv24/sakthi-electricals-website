@@ -4,10 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { Zap, Building2, Factory, Plane, FileText } from "lucide-react";
 import { useInView } from "@/lib/useInView";
-import { customers } from "@/lib/data";
+import { customers as staticCustomers } from "@/lib/data";
+
+type CustomerItem = { name: string; short: string; logo: string; sector: string };
 
 /* ---- Logo grid — diagonal roll-call, scaleSettle stagger ---- */
-export function CustomerLogoGrid() {
+export function CustomerLogoGrid({ customers = staticCustomers }: { customers?: CustomerItem[] }) {
   const { ref, inView } = useInView({ threshold: 0.08, rootMargin: "0px" });
   return (
     <section className="band" ref={ref as React.Ref<HTMLElement>}>
