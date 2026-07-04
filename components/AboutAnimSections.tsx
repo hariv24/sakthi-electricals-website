@@ -180,7 +180,6 @@ export function AboutCPRISection() {
               Our manufactured transformers are tested by the Central Power Research Institute (CPRI), Bangalore — India&apos;s premier authority for testing and certification of power equipment. Every product is also routine tested for quality assurance at our own sophisticated laboratory before final dispatch.
             </p>
             <div className="cert-row" style={{ marginTop: 24 }}>
-              <span className="cert-gold"><Award size={17} style={{ color: "#6E4F00" }} /> ISO <b>9001:2015</b> <span className="cg-sub">GOLD STANDARD</span></span>
               <span className="cert">CPRI Tested</span>
               <span className="cert"><b>IS</b> 2705</span>
               <span className="cert"><b>IS</b> 3156</span>

@@ -184,7 +184,6 @@ export function FacilitiesSolutionsSection() {
           borderTop: "1px solid var(--border)",
           ...(inView ? { animation: "slideUp 240ms var(--ease-out) 200ms both" } : {}),
         }}>
-          <span className="cert-gold"><Award size={15} style={{ color: "#6E4F00" }} /> ISO <b>9001:2015</b> <span className="cg-sub">CERTIFIED</span></span>
           <span className="cert">CPRI Type Tested</span>
           <span className="cert"><b>IS</b> 2705</span>
           <span className="cert"><b>IS</b> 3156</span>

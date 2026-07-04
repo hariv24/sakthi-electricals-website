@@ -18,12 +18,6 @@ export default function Footer({ menuData }: { menuData: MenuFamily[] }) {
             <p style={{ color: "var(--fg-on-dark-2)", fontSize: 14, lineHeight: 1.6, marginTop: 16, maxWidth: 320 }}>
               Instrument transformer people. Manufacturers of LT & HT instrument transformers — cast-resin and oil-cooled up to 33 kV — control & service panels, electrical test benches, epoxy-cast resin bushings and vibratory feeders.
             </p>
-            <div style={{ marginTop: 20 }}>
-              <span className="cert-gold">
-                <Award size={17} style={{ color: "#6E4F00" }} /> ISO <b>9001:2015</b>
-                <span className="cg-sub">GOLD STANDARD</span>
-              </span>
-            </div>
           </div>
 
           {/* Products */}

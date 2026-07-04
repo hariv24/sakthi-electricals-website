@@ -97,7 +97,6 @@ export function HomeStatsSection() {
           ))}
         </div>
         <div style={{ display: "flex", gap: 9, flexWrap: "wrap", justifyContent: "center", alignItems: "center", marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.12)" }}>
-          <span className="cert-gold"><Award size={17} style={{ color: "#6E4F00" }} /> ISO <b>9001:2015</b> <span className="cg-sub">GOLD STANDARD</span></span>
           <span className="cert">CPRI Tested</span>
           <span className="cert"><b>IS</b> 2705</span>
           <span className="cert"><b>IS</b> 3156</span>
