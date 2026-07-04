@@ -56,14 +56,20 @@ function HeroSection() {
         <p style={{ color: "#DCE0E8", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.6, maxWidth: "58ch", marginTop: 24, animation: "fadeSlideUp 300ms var(--ease-out) 320ms both" }}>
           Oil-cooled and resin-cast instrument transformers, control transformers and EB HT &amp; LT panels — manufactured up to 33 kV, built to IS standards and tested before they leave the floor.
         </p>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 32, animation: "fadeSlideUp 280ms var(--ease-out) 460ms both" }}>
+        <div className="hero-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 32, animation: "fadeSlideUp 280ms var(--ease-out) 460ms both" }}>
           <Link href="/products" className="btn btn-primary btn-lg"><Box size={18} /> Explore products</Link>
           <Link href="/contact" className="btn btn-on-dark btn-lg">Request a quote <ArrowRight size={18} /></Link>
         </div>
         <HeroStats />
       </div>
       <div style={{ position: "absolute", left: 0, bottom: 0, height: 3, width: "100%", zIndex: 3, background: "linear-gradient(90deg,var(--se-red) 0%,var(--se-red) 38%,var(--se-gold) 38%,var(--se-gold) 50%,transparent 50%)", transformOrigin: "left", animation: "rulerExtend 600ms var(--ease-out) 900ms both" }} />
-      <style>{`@media(prefers-reduced-motion:reduce){.hero *{animation:none!important;opacity:1!important;transform:none!important}}`}</style>
+      <style>{`
+        @media(prefers-reduced-motion:reduce){.hero *{animation:none!important;opacity:1!important;transform:none!important}}
+        @media(max-width:480px){
+          .hero-cta-row{flex-direction:column!important;align-items:flex-start!important}
+          .hero-cta-row .btn{width:100%;justify-content:center}
+        }
+      `}</style>
     </section>
   );
 }

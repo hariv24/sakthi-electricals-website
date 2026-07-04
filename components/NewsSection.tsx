@@ -92,7 +92,7 @@ export default function NewsSection({ items }: { items: NewsItem[] }) {
             )}
 
             {/* Article body */}
-            <div style={{ padding: active.image_url ? '28px 32px 40px' : '60px 32px 40px' }}>
+            <div style={{ padding: active.image_url ? '24px 20px 36px' : '56px 20px 36px' }} className="news-modal-body">
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 12 }}>
                 {formatDate(active.published_date)}
               </div>
@@ -109,6 +109,9 @@ export default function NewsSection({ items }: { items: NewsItem[] }) {
 
       <style>{`
         .news-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.1); transform: translateY(-2px); }
+        @media (min-width: 560px) {
+          .news-modal-body { padding-left: 32px !important; padding-right: 32px !important; }
+        }
       `}</style>
     </>
   );

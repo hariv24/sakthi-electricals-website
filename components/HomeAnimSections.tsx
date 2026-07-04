@@ -194,7 +194,7 @@ export function HomeProductsSection({ families }: { families: CatalogNode[] }) {
         </div>
 
       </div>
-      <style>{`.prod-fam-cell:hover{transform:translateY(-3px)!important;box-shadow:var(--shadow-md)!important;border-color:var(--se-red)!important}@media(max-width:860px){.prod-fam-grid{grid-template-columns:repeat(2,1fr)!important}}`}</style>
+      <style>{`.prod-fam-cell:hover{transform:translateY(-3px)!important;box-shadow:var(--shadow-md)!important;border-color:var(--se-red)!important}@media(max-width:860px){.prod-fam-grid{grid-template-columns:repeat(2,1fr)!important}}@media(max-width:400px){.prod-fam-grid{grid-template-columns:1fr!important}}`}</style>
     </section>
   );
 }

@@ -280,11 +280,12 @@ export default function CareersPage() {
           <style>{`
             .field-wrap{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
             .field-wrap label{font-family:var(--font-body);font-weight:600;font-size:13.5px;color:var(--fg1)}
-            .field-wrap input,.field-wrap select,.field-wrap textarea{font-family:var(--font-body);font-size:15px;color:var(--fg1);padding:12px 14px;border:1.5px solid var(--border-strong);border-radius:var(--r-md);background:#fff;width:100%;transition:border-color 200ms,box-shadow 200ms}
+            .field-wrap input,.field-wrap select,.field-wrap textarea{font-family:var(--font-body);font-size:16px;color:var(--fg1);padding:12px 14px;border:1.5px solid var(--border-strong);border-radius:var(--r-md);background:#fff;width:100%;transition:border-color 200ms,box-shadow 200ms}
             .field-wrap input:focus,.field-wrap select:focus,.field-wrap textarea:focus{outline:none;border-color:var(--se-red);box-shadow:var(--focus-ring)}
             .field-wrap textarea{resize:vertical}
             @media(max-width:920px){.careers-layout{grid-template-columns:1fr!important;gap:32px!important}}
             @media(max-width:560px){.form-row-grid{grid-template-columns:1fr!important}}
+            @media(max-width:560px){.careers-form-inner{padding:20px!important}}
           `}</style>
         </section>
 

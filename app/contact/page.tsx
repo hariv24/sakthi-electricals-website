@@ -91,7 +91,7 @@ export default function ContactPage() {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} noValidate style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "var(--r-lg)", padding: 32, boxShadow: "var(--shadow-sm)" }}>
+                <form onSubmit={handleSubmit} noValidate className="contact-form-inner" style={{ background: "#fff", border: "1px solid var(--border)", borderRadius: "var(--r-lg)", padding: 32, boxShadow: "var(--shadow-sm)" }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="form-row-grid">
                     <Field label="Name" required delay={inView ? fieldDelays[0] : 0}><input type="text" name="name" required placeholder="Your full name" /></Field>
                     <Field label="Company" required delay={inView ? fieldDelays[1] : 0}><input type="text" name="company" required placeholder="Organisation" /></Field>
@@ -175,9 +175,10 @@ export default function ContactPage() {
           <style>{`
             @media(max-width:920px){.contact-layout{grid-template-columns:1fr!important;gap:32px!important}}
             @media(max-width:560px){.form-row-grid{grid-template-columns:1fr!important}}
+            @media(max-width:560px){.contact-form-inner{padding:20px!important}}
             .field-wrap{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
             .field-wrap label{font-family:var(--font-body);font-weight:600;font-size:13.5px;color:var(--fg1)}
-            .field-wrap input,.field-wrap select,.field-wrap textarea{font-family:var(--font-body);font-size:15px;color:var(--fg1);padding:12px 14px;border:1.5px solid var(--border-strong);border-radius:var(--r-md);background:#fff;width:100%;transition:border-color 200ms,box-shadow 200ms}
+            .field-wrap input,.field-wrap select,.field-wrap textarea{font-family:var(--font-body);font-size:16px;color:var(--fg1);padding:12px 14px;border:1.5px solid var(--border-strong);border-radius:var(--r-md);background:#fff;width:100%;transition:border-color 200ms,box-shadow 200ms}
             .field-wrap input:focus,.field-wrap select:focus,.field-wrap textarea:focus{outline:none;border-color:var(--se-red);box-shadow:var(--focus-ring)}
             .field-wrap textarea{resize:vertical}
           `}</style>
