@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/server';
-import { MEDIA_DEFAULTS } from '@/lib/siteMedia';
+import { MEDIA_DEFAULTS, MEDIA_SLOT_PATHS } from '@/lib/siteMedia';
+
+function revalidateSlot(key: string) {
+  for (const path of MEDIA_SLOT_PATHS[key] ?? []) revalidatePath(path);
+}
 
 console.log('[admin/media] route loaded');
 
@@ -44,6 +49,7 @@ export async function POST(req: NextRequest) {
   );
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
 
+  revalidateSlot(key);
   console.log('[admin/media] uploaded', key, url);
   return NextResponse.json({ ok: true, url });
 }
@@ -60,6 +66,7 @@ export async function PATCH(req: NextRequest) {
     { onConflict: 'key' },
   );
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateSlot(key);
   return NextResponse.json({ ok: true, url });
 }
 
@@ -71,5 +78,6 @@ export async function DELETE(req: NextRequest) {
 
   const sb = await createSupabaseAdminClient();
   await sb.from('site_media').delete().eq('key', key);
+  revalidateSlot(key);
   return NextResponse.json({ ok: true, url: MEDIA_DEFAULTS[key] });
 }

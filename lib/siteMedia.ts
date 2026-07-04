@@ -32,6 +32,25 @@ export const MEDIA_LABELS: Record<string, { label: string; hint: string; isVideo
   contact_banner:    { label: 'Contact Page — Hero Banner', hint: 'The full-width banner at the top of the Contact page.' },
 };
 
+// Which public page(s) render each slot, so an admin save can instantly
+// refresh exactly those pages instead of waiting for a timed cache expiry.
+export const MEDIA_SLOT_PATHS: Record<string, string[]> = {
+  hero_video:        ['/'],
+  hero_poster:       ['/'],
+  about_home:        ['/'],
+  stats_coil:        ['/'],
+  about_banner:      ['/about'],
+  cpri_image:        ['/about'],
+  products_banner:   ['/products'],
+  facilities_banner: ['/facilities'],
+  facilities_floor:  ['/facilities'],
+  facilities_sol1:   ['/facilities'],
+  facilities_sol2:   ['/facilities'],
+  customers_banner:  ['/customers'],
+  careers_banner:    ['/careers'],
+  contact_banner:    ['/contact'],
+};
+
 export async function getSiteMedia(keys: string[]): Promise<Record<string, string>> {
   try {
     const { createSupabaseAdminClient } = await import('./supabase/server');
