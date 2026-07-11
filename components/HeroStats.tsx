@@ -5,8 +5,8 @@ import { CountUp } from "./CountUp";
 export function HeroStats() {
   return (
     <div style={{
-      display: "flex", gap: 32, flexWrap: "wrap", marginTop: 40,
-      paddingTop: 24, borderTop: "1px solid rgba(255,255,255,.14)",
+      display: "flex", gap: 32, flexWrap: "wrap", marginTop: 26,
+      paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.14)",
       animation: "fadeIn 400ms var(--ease-out) 700ms both",
     }}>
       {/* Count starts at 820ms — after text appears at ~520ms, row fades in at 700ms */}
