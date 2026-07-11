@@ -46,14 +46,14 @@ export default async function HomePage() {
 
 function HeroSection({ videoUrl, posterUrl }: { videoUrl: string; posterUrl: string }) {
   return (
-    <section style={{ position: "relative", minHeight: "88vh", display: "flex", alignItems: "flex-end", overflow: "hidden", background: "var(--se-navy-900)" }}>
+    <section style={{ position: "relative", minHeight: "88vh", display: "flex", alignItems: "center", overflow: "hidden", background: "var(--se-navy-900)" }}>
       <video autoPlay muted loop playsInline poster={posterUrl}
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}>
         <source src={videoUrl} type="video/mp4" />
       </video>
       <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(90deg,rgba(10,7,22,.86) 0%,rgba(10,7,22,.55) 42%,rgba(10,7,22,.12) 72%,rgba(10,7,22,0) 100%),linear-gradient(0deg,rgba(10,7,22,.82) 0%,rgba(10,7,22,.15) 38%,rgba(10,7,22,0) 60%)" }} />
       <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", opacity: .5, backgroundImage: "linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px)", backgroundSize: "56px 56px", WebkitMaskImage: "radial-gradient(120% 90% at 18% 90%,#000 0%,transparent 75%)", maskImage: "radial-gradient(120% 90% at 18% 90%,#000 0%,transparent 75%)" }} />
-      <div style={{ position: "relative", zIndex: 2, maxWidth: 1320, margin: "0 auto", width: "100%", padding: "0 24px 64px" }}>
+      <div style={{ position: "relative", zIndex: 2, maxWidth: 1320, margin: "0 auto", width: "100%", padding: "60px 24px 80px" }}>
         <div className="eyebrow eb" style={{ color: "var(--se-gold-300)", marginBottom: 12, animation: "fadeSlideDown 280ms var(--ease-out) 80ms both" }}>
           Instrument Transformer People · Est. 2006
         </div>
