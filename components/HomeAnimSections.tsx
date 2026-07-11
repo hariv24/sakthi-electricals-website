@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import {
   ArrowRight, Clock, Users, Briefcase, Award,
   Factory, Layers, Gauge, ShieldCheck, ChevronRight, LayoutGrid,
-  FileText, Phone,
+  FileText, Phone, X, ZoomIn,
 } from "lucide-react";
 import { useInView } from "@/lib/useInView";
 import { CountUp } from "@/components/CountUp";
@@ -19,6 +20,106 @@ function toTitleCase(str: string) {
     if (i > 0 && LOWER.has(lc)) return lc;
     return lc.charAt(0).toUpperCase() + lc.slice(1);
   }).join(' ');
+}
+
+/* ---- Certification strip ---- */
+export function HomeCertificationSection() {
+  const [lightbox, setLightbox] = useState(false);
+  const { ref, inView } = useInView({ threshold: 0.12, rootMargin: "0px" });
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
+
+  return (
+    <section style={{ padding: "40px 0 0" }} ref={ref as React.Ref<HTMLElement>}>
+      <div className="wrap-wide">
+        <div
+          className="cert-strip"
+          style={{
+            display: "flex", alignItems: "center", gap: 24,
+            background: "#fff", border: "1px solid var(--border)", borderRadius: "var(--r-lg)",
+            padding: "20px 28px", boxShadow: "var(--shadow-sm)",
+            ...(inView ? { animation: "fadeIn 320ms var(--ease-out) both" } : {}),
+          }}
+        >
+          <button
+            onClick={() => setLightbox(true)}
+            aria-label="View ZED Gold certificate, full size"
+            style={{
+              flex: "none", position: "relative", width: 78, height: 104,
+              borderRadius: "var(--r-sm)", overflow: "hidden", border: "1px solid var(--border)",
+              cursor: "zoom-in", padding: 0, background: "var(--steel-50)",
+            }}
+          >
+            <Image src="/assets/certificates/zed-gold-certificate.png" alt="ZED Gold certificate" fill style={{ objectFit: "cover" }} />
+            <span style={{
+              position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+              background: "rgba(10,7,22,0)", transition: "background 160ms var(--ease)",
+            }} className="cert-thumb-overlay">
+              <ZoomIn size={18} color="#fff" style={{ opacity: 0 }} className="cert-thumb-icon" />
+            </span>
+          </button>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <span className="cert-gold">
+              <Award className="ic" /> <b>ZED Gold</b> Certified
+              <span className="cg-sub">Ministry of MSME</span>
+            </span>
+            <p style={{ marginTop: 12, color: "var(--fg2)", fontSize: 14, lineHeight: 1.6, maxWidth: "62ch" }}>
+              Sakthi Electricals holds the ZED Gold rating under the Government of India&apos;s Zero Defect Zero Effect scheme, recognising our zero-defect manufacturing and sustainable production practices.
+            </p>
+          </div>
+
+          <button onClick={() => setLightbox(true)} className="btn btn-ghost btn-sm" style={{ flex: "none" }}>
+            View certificate
+          </button>
+        </div>
+      </div>
+
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(false)}
+          style={{
+            position: "fixed", inset: 0, zIndex: 300, background: "rgba(10,7,22,.82)",
+            display: "flex", alignItems: "center", justifyContent: "center", padding: 24,
+            animation: "fadeIn 160ms var(--ease-out) both",
+          }}
+        >
+          <button
+            onClick={() => setLightbox(false)}
+            aria-label="Close"
+            style={{
+              position: "absolute", top: 20, right: 24, background: "rgba(255,255,255,.1)",
+              border: "1px solid rgba(255,255,255,.25)", borderRadius: "var(--r-sm)",
+              width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer", color: "#fff",
+            }}
+          >
+            <X size={20} />
+          </button>
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ position: "relative", width: "min(86vw, 480px)", aspectRatio: "575/771", maxHeight: "88vh", borderRadius: "var(--r-md)", overflow: "hidden", boxShadow: "var(--shadow-lg)" }}
+          >
+            <Image src="/assets/certificates/zed-gold-certificate.png" alt="ZED Gold certificate — full size" fill style={{ objectFit: "contain" }} sizes="(max-width: 600px) 86vw, 480px" />
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        .cert-strip:hover .cert-thumb-overlay { background: rgba(10,7,22,.35) !important; }
+        .cert-strip:hover .cert-thumb-icon { opacity: 1 !important; }
+        @media(max-width:640px){
+          .cert-strip{flex-wrap:wrap}
+          .cert-strip > button:last-child{width:100%;justify-content:center}
+        }
+      `}</style>
+    </section>
+  );
 }
 
 /* ---- About ---- */
