@@ -55,7 +55,7 @@ function HeroSection({ videoUrl, posterUrl }: { videoUrl: string; posterUrl: str
         <div className="eyebrow eb" style={{ color: "var(--se-gold-300)", marginBottom: 16, animation: "fadeSlideDown 280ms var(--ease-out) 80ms both" }}>
           Instrument Transformer People · Est. 2006
         </div>
-        <h1 style={{ color: "#fff", fontSize: "clamp(38px,5.4vw,68px)", lineHeight: 1.02, maxWidth: "18ch", letterSpacing: "-.02em", paddingBottom: ".08em", animation: "fadeSlideUp 340ms var(--ease-out) 180ms both" }}>
+        <h1 style={{ color: "#fff", fontSize: "clamp(32px,4.6vw,58px)", lineHeight: 1.05, maxWidth: "18ch", letterSpacing: "-.02em", paddingBottom: ".08em", animation: "fadeSlideUp 340ms var(--ease-out) 180ms both" }}>
           Transformers engineered for the grid you <span style={{ color: "var(--se-gold)" }}>actually run.</span>
         </h1>
         <p style={{ color: "#DCE0E8", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.6, maxWidth: "58ch", marginTop: 24, animation: "fadeSlideUp 300ms var(--ease-out) 320ms both" }}>

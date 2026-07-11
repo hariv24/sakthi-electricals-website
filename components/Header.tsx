@@ -96,11 +96,16 @@ export default function Header({ menuData }: HeaderProps) {
 
           {/* Brand */}
           <Link href="/" aria-label="Sakthi Electricals home" style={{ display: "flex", alignItems: "center", gap: 12, flex: "none" }}>
-            <Image src="/assets/logo.png" alt="Sakthi Electricals" width={44} height={44} style={{ objectFit: "contain" }} />
-            <span style={{ display: "flex", flexDirection: "column", gap: 2, lineHeight: 1 }}>
-              <Image src="/assets/brand/wordmark.png" alt="SAKTHI ELECTRICALS" width={160} height={19} style={{ objectFit: "contain", height: 19, width: "auto" }} />
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "9.5px", letterSpacing: ".04em", color: "var(--se-red)" }}>
-                (An ISO 9001 Certified Company)
+            <Image src="/assets/logo.png" alt="Sakthi Electricals" width={56} height={56} style={{ objectFit: "contain" }} />
+            <span style={{ display: "flex", flexDirection: "column", gap: 3, lineHeight: 1 }}>
+              <Image src="/assets/brand/wordmark.png" alt="SAKTHI ELECTRICALS" width={200} height={24} style={{ objectFit: "contain", height: 24, width: "auto" }} />
+              <span style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "11px", letterSpacing: ".04em", color: "var(--se-red)" }}>
+                  (An ISO 9001 Certified Company)
+                </span>
+                <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "11px", letterSpacing: ".04em", color: "var(--se-gold-600, #B8860B)" }}>
+                  · ZED Gold Certified
+                </span>
               </span>
             </span>
           </Link>
