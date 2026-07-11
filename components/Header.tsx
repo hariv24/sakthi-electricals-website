@@ -66,7 +66,7 @@ export default function Header({ menuData }: HeaderProps) {
       key={href}
       href={href}
       style={{
-        fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "13.5px",
+        fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "14.5px",
         color: isActive(href) ? "var(--se-red)" : "var(--fg1)",
         padding: "8px 12px", borderRadius: "var(--r-sm)", position: "relative",
         transition: "color 200ms var(--ease)",
@@ -92,20 +92,18 @@ export default function Header({ menuData }: HeaderProps) {
           transition: "box-shadow 200ms var(--ease), background 200ms var(--ease)",
         }}
       >
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", height: 76, display: "flex", alignItems: "center", gap: 32 }}>
+        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", height: 100, display: "flex", alignItems: "center", gap: 32 }}>
 
           {/* Brand */}
-          <Link href="/" aria-label="Sakthi Electricals home" style={{ display: "flex", alignItems: "center", gap: 12, flex: "none" }}>
-            <Image src="/assets/logo.png" alt="Sakthi Electricals" width={56} height={56} style={{ objectFit: "contain" }} />
-            <span style={{ display: "flex", flexDirection: "column", gap: 3, lineHeight: 1 }}>
-              <Image src="/assets/brand/wordmark.png" alt="SAKTHI ELECTRICALS" width={200} height={24} style={{ objectFit: "contain", height: 24, width: "auto" }} />
-              <span style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "11px", letterSpacing: ".04em", color: "var(--se-red)" }}>
-                  (An ISO 9001 Certified Company)
-                </span>
-                <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "11px", letterSpacing: ".04em", color: "var(--se-gold-600, #B8860B)" }}>
-                  · ZED Gold Certified
-                </span>
+          <Link href="/" aria-label="Sakthi Electricals home" style={{ display: "flex", alignItems: "center", gap: 16, flex: "none" }}>
+            <Image src="/assets/logo.png" alt="Sakthi Electricals" width={84} height={84} style={{ objectFit: "contain" }} />
+            <span style={{ display: "flex", flexDirection: "column", gap: 4, lineHeight: 1 }}>
+              <Image src="/assets/brand/wordmark.png" alt="SAKTHI ELECTRICALS" width={272} height={32} style={{ objectFit: "contain", height: 32, width: "auto" }} />
+              <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "12px", letterSpacing: ".04em", color: "var(--se-red)" }}>
+                (An ISO 9001 Certified Company)
+              </span>
+              <span style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: "13.5px", letterSpacing: ".05em", color: "var(--se-gold-600, #B8860B)" }}>
+                ZED Gold Certified Company
               </span>
             </span>
           </Link>
@@ -126,7 +124,7 @@ export default function Header({ menuData }: HeaderProps) {
                 href="/products"
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 5,
-                  fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "13.5px",
+                  fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "14.5px",
                   color: isProductsActive ? "var(--se-red)" : "var(--fg1)",
                   padding: "8px 12px", borderRadius: "var(--r-sm)", position: "relative",
                   transition: "color 200ms var(--ease)",
@@ -374,13 +372,13 @@ export default function Header({ menuData }: HeaderProps) {
       <div
         className="mobile-nav-drawer"
         style={{
-          position: "fixed", top: 76, left: 0, right: 0, zIndex: 99,
+          position: "fixed", top: 100, left: 0, right: 0, zIndex: 99,
           background: "#fff", borderBottom: "1px solid var(--border)", boxShadow: "var(--shadow-md)",
           transform: mobileOpen ? "translateY(0)" : "translateY(-12px)",
           opacity: mobileOpen ? 1 : 0,
           pointerEvents: mobileOpen ? "auto" : "none",
           transition: "all 200ms var(--ease)",
-          overflowY: "auto", maxHeight: "calc(100vh - 76px)",
+          overflowY: "auto", maxHeight: "calc(100vh - 100px)",
         }}
       >
         <Link href="/" onClick={() => setMobileOpen(false)} style={{ display: "block", padding: "14px 24px", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 16, borderBottom: "1px solid var(--border)", color: isActive("/") ? "var(--se-red)" : "var(--fg1)" }}>
@@ -509,7 +507,7 @@ export default function Header({ menuData }: HeaderProps) {
       </div>
 
       {/* Spacer so page content clears the fixed header */}
-      <div style={{ height: 76 }} />
+      <div style={{ height: 100 }} />
 
       <style>{`
         @media (max-width: 1020px) {

@@ -59,7 +59,7 @@ function HeroSection({ videoUrl, posterUrl }: { videoUrl: string; posterUrl: str
           Transformers engineered for the grid you <span style={{ color: "var(--se-gold)" }}>actually run.</span>
         </h1>
         <p style={{ color: "#DCE0E8", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.6, maxWidth: "58ch", marginTop: 24, animation: "fadeSlideUp 300ms var(--ease-out) 320ms both" }}>
-          Oil-cooled and resin-cast instrument transformers, control transformers and EB HT &amp; LT panels — manufactured up to 33 kV, built to IS standards and tested before they leave the floor.
+          Oil-cooled and resin-cast instrument transformers, manufactured up to 33 kV, control transformers, and HT &amp; LT panels — built to IS standards and tested before they leave the floor.
         </p>
         <div className="hero-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 32, animation: "fadeSlideUp 280ms var(--ease-out) 460ms both" }}>
           <Link href="/products" className="btn btn-primary btn-lg"><Box size={18} /> Explore products</Link>
