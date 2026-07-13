@@ -99,7 +99,7 @@ export default function Header({ menuData }: HeaderProps) {
             <Image src="/assets/logo.png" alt="Sakthi Electricals" width={112} height={112} style={{ objectFit: "contain" }} />
             <span style={{ display: "flex", flexDirection: "column", gap: 10, lineHeight: 1 }}>
               <Image
-                src="/assets/brand/wordmark.png" alt="SAKTHI ELECTRICALS" width={404} height={48}
+                src="/assets/brand/wordmark-bold.png" alt="SAKTHI ELECTRICALS" width={404} height={48}
                 style={{ objectFit: "contain", height: 48, width: "auto" }}
               />
               <span style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: "13.5px", letterSpacing: ".07em", whiteSpace: "nowrap" }}>
