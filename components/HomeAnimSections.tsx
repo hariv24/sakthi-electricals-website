@@ -133,7 +133,7 @@ export function HomeAboutSection({ aboutHomeImg = '/assets/banners/about-home.jp
             <div className="eyebrow eb">About Sakthi Electricals</div>
             <h2 style={{ marginTop: 12, maxWidth: "16ch" }}>Over 32 years of experience in this business.</h2>
             <p style={{ color: "var(--fg1)", fontWeight: 500, fontSize: "var(--fs-body-lg)", lineHeight: 1.62, marginTop: 20 }}>
-              Sakthi Electricals, established in the year 2006, is an ISO 9001 certified company manufacturing a wide range of instrument transformers up to 33 kV, vibratory feeders, electrical control panels and EB HT &amp; LT service panels.
+              Sakthi Electricals, established in the year 2006, is an ISO 9001 certified company manufacturing a wide range of instrument transformers up to 33 kV, vibratory feeders, electrical control panels and HT &amp; LT service panels.
             </p>
             <p style={{ color: "var(--fg2)", fontSize: "var(--fs-body-lg)", lineHeight: 1.62, marginTop: 20 }}>
               Our engineers have built 32 years of core competence in the manufacturing, design and development of test and measuring instrument transformers and industrial control panel products — on strong fundamentals, as per the latest IEC standards.
