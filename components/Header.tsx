@@ -92,17 +92,17 @@ export default function Header({ menuData }: HeaderProps) {
           transition: "box-shadow 200ms var(--ease), background 200ms var(--ease)",
         }}
       >
-        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", height: 108, display: "flex", alignItems: "center", gap: 32 }}>
+        <div style={{ maxWidth: 1320, margin: "0 auto", padding: "0 24px", height: 120, display: "flex", alignItems: "center", gap: 32 }}>
 
           {/* Brand */}
           <Link href="/" aria-label="Sakthi Electricals home" style={{ display: "flex", alignItems: "center", gap: 20, flex: "none" }}>
-            <Image src="/assets/logo.png" alt="Sakthi Electricals" width={96} height={96} style={{ objectFit: "contain" }} />
-            <span style={{ display: "flex", flexDirection: "column", gap: 9, lineHeight: 1 }}>
+            <Image src="/assets/logo.png" alt="Sakthi Electricals" width={112} height={112} style={{ objectFit: "contain" }} />
+            <span style={{ display: "flex", flexDirection: "column", gap: 10, lineHeight: 1 }}>
               <Image
-                src="/assets/brand/wordmark.png" alt="SAKTHI ELECTRICALS" width={352} height={42}
-                style={{ objectFit: "contain", height: 42, width: "auto" }}
+                src="/assets/brand/wordmark.png" alt="SAKTHI ELECTRICALS" width={404} height={48}
+                style={{ objectFit: "contain", height: 48, width: "auto" }}
               />
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "12.5px", letterSpacing: ".07em", whiteSpace: "nowrap" }}>
+              <span style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: "13.5px", letterSpacing: ".07em", whiteSpace: "nowrap" }}>
                 <span style={{ color: "var(--se-red)" }}>An ISO 9001</span>
                 <span style={{ color: "var(--fg2)" }}> &amp; </span>
                 <span style={{ color: "var(--se-gold-600, #B8860B)", fontWeight: 800 }}>ZED Gold</span>
@@ -375,13 +375,13 @@ export default function Header({ menuData }: HeaderProps) {
       <div
         className="mobile-nav-drawer"
         style={{
-          position: "fixed", top: 108, left: 0, right: 0, zIndex: 99,
+          position: "fixed", top: 120, left: 0, right: 0, zIndex: 99,
           background: "#fff", borderBottom: "1px solid var(--border)", boxShadow: "var(--shadow-md)",
           transform: mobileOpen ? "translateY(0)" : "translateY(-12px)",
           opacity: mobileOpen ? 1 : 0,
           pointerEvents: mobileOpen ? "auto" : "none",
           transition: "all 200ms var(--ease)",
-          overflowY: "auto", maxHeight: "calc(100vh - 108px)",
+          overflowY: "auto", maxHeight: "calc(100vh - 120px)",
         }}
       >
         <Link href="/" onClick={() => setMobileOpen(false)} style={{ display: "block", padding: "14px 24px", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 16, borderBottom: "1px solid var(--border)", color: isActive("/") ? "var(--se-red)" : "var(--fg1)" }}>
@@ -510,7 +510,7 @@ export default function Header({ menuData }: HeaderProps) {
       </div>
 
       {/* Spacer so page content clears the fixed header */}
-      <div style={{ height: 108 }} />
+      <div style={{ height: 120 }} />
 
       <style>{`
         @media (max-width: 1020px) {
