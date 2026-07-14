@@ -102,11 +102,8 @@ export default function Header({ menuData }: HeaderProps) {
                 src="/assets/brand/wordmark-bold.png" alt="SAKTHI ELECTRICALS" width={404} height={48}
                 style={{ objectFit: "contain", height: 48, width: "auto" }}
               />
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: "13.5px", letterSpacing: ".07em", whiteSpace: "nowrap" }}>
-                <span style={{ color: "var(--se-red)" }}>An ISO 9001</span>
-                <span style={{ color: "var(--fg2)" }}> &amp; </span>
-                <span style={{ color: "var(--se-gold-600, #B8860B)", fontWeight: 800 }}>ZED Gold</span>
-                <span style={{ color: "var(--se-red)" }}> Certified Company</span>
+              <span style={{ fontFamily: "var(--font-body)", fontWeight: 800, fontSize: "13.5px", letterSpacing: ".07em", whiteSpace: "nowrap", color: "var(--se-red)" }}>
+                An ISO 9001 &amp; ZED Gold Certified Company
               </span>
             </span>
           </Link>
